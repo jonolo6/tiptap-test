@@ -4,6 +4,14 @@
 	import { StarterKit } from '@tiptap/starter-kit';
 	import BubbleMenu from '@tiptap/extension-bubble-menu';
 
+	let {
+		content = `
+        <h1>Hello Svelte! 🌍️ </h1>
+        <p>This editor is running in Svelte.</p>
+        <p>Select some text to see the bubble menu popping up.</p>
+      `
+	} = $props();
+
 	let bubbleMenu = $state<HTMLDivElement>();
 	let element = $state<HTMLDivElement>();
 	let editor = $state<Editor>();
@@ -17,11 +25,7 @@
 					element: bubbleMenu
 				})
 			],
-			content: `
-        <h1>Hello Svelte! 🌍️ </h1>
-        <p>This editor is running in Svelte.</p>
-        <p>Select some text to see the bubble menu popping up.</p>
-      `,
+			content,
 			onTransaction: ({ editor: _editor }) => {
 				// Increment the state signal to force a re-render
 				editor = _editor;
