@@ -19,6 +19,7 @@
 
 	const editor = $derived(model.editor);
 
+	// TODO: Fix the headings here...
 	const headings = [
 		{
 			Icon: Heading1Icon,
@@ -36,19 +37,6 @@
 		}
 	];
 	let _state = $state({}) as Record<string, { active: boolean; can: boolean }>;
-
-	onMount(() => {
-		editor.on('update', onEditorUpdate);
-		return () => {
-			editor.off('update', onEditorUpdate);
-		};
-	});
-
-	function onEditorUpdate() {
-		headings.forEach((heading) => {
-			_state[heading.key] = { active: heading.active() ?? false, can: heading.can() ?? false };
-		});
-	}
 </script>
 
 <div class={['fixed-menu flex items-center rounded-lg border px-2 py-0.5', classValue]}>
