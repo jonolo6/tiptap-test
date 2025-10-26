@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { Editor } from '@tiptap/core';
-	import { StarterKit } from '@tiptap/starter-kit';
-	import BubbleMenu from '@tiptap/extension-bubble-menu';
+	import { onMount } from 'svelte';
 	import TiptapMenu from './TiptapMenu.svelte';
+	import { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
 
 	let {
 		content = `
@@ -13,34 +11,23 @@
       `
 	} = $props();
 
-	let bubbleMenu = $state<HTMLDivElement>();
 	let element = $state<HTMLDivElement>();
-	let editor = $state<Editor>();
 
+	let model = $state<TiptapViewModel>();
 	onMount(() => {
-		editor = new Editor({
-			element: element,
-			extensions: [
-				StarterKit,
-				BubbleMenu.configure({
-					element: bubbleMenu
-				})
-			],
-			content,
-			onTransaction: ({ editor: _editor }) => {
-				// Increment the state signal to force a re-render
-				editor = _editor;
-			}
-		});
-	});
-	onDestroy(() => {
-		editor?.destroy();
+		model = new TiptapViewModel(element!, content);
+		return () => {
+			model?.destroy();
+		};
 	});
 </script>
 
+<div class="bg-blue-200">
+	<pre>{JSON.stringify(model?.active)}</pre>
+</div>
 <div style="position: relative" class="app">
-	{#if editor}
-		<TiptapMenu {editor} />
+	{#if model != null}
+		<TiptapMenu {model} class="mx-2 my-2" />
 	{/if}
 
 	<div bind:this={element}></div>
