@@ -13,6 +13,7 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import ListSelect from './tiptap-menu/ListSelect.svelte';
 	import type { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
+	import HeadingSelect from './tiptap-menu/HeadingSelect.svelte';
 
 	let { model, class: classValue }: { model: TiptapViewModel; class?: ClassValue } = $props();
 
@@ -51,13 +52,11 @@
 </script>
 
 <div class={['fixed-menu flex items-center rounded-lg border px-2 py-0.5', classValue]}>
-	<div class="flex">
-		{#each headings as heading}
-			<div><heading.Icon /></div>
-		{/each}
-	</div>
+	<HeadingSelect {editor} />
+
 	<Separator orientation="vertical" class="mx-3 py-2.5" />
-	<ListSelect {editor} />
+
+	<ListSelect {model} />
 
 	<Separator orientation="vertical" class="mx-3 py-2.5" />
 

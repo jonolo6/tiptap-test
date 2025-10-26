@@ -1,49 +1,40 @@
 <script lang="ts">
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import List from '@lucide/svelte/icons/list';
-	import ListOrdered from '@lucide/svelte/icons/list-ordered';
-	import ListTodo from '@lucide/svelte/icons/list-todo';
+	import { Heading1Icon, Heading2Icon, HeadingIcon, ChevronDown } from '@lucide/svelte/icons';
 	import { Editor } from '@tiptap/core';
 	import { Select } from 'bits-ui';
+	import { onMount } from 'svelte';
 
-	import type { TiptapViewModel } from './TipTapViewModel.svelte';
-
-	type Type = 'none' | 'bulletList' | 'orderedList' | 'todosList';
+	type Type = 'none' | 'bullet' | 'ordered' | 'todos';
 	type Props = {
-		model: TiptapViewModel;
+		editor: Editor;
 	};
 
-	let { model }: Props = $props();
-
-	const editor = $derived(model.editor);
 	const options = [
 		{
-			value: 'bulletList',
-			label: 'Bullet List',
-			Icon: List,
-			isActive: () => editor.isActive('bulletList')
+			value: 'heading1',
+			label: 'Heading One',
+			Icon: Heading1Icon,
+			act: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+			isActive: () => editor.isActive('heading', { level: 1 })
 		},
 		{
-			value: 'orderedList',
-			label: 'Ordered List',
-			Icon: ListOrdered,
-			isActive: () => editor.isActive('orderedList')
-		},
-		{
-			value: 'todosList',
-			label: 'Todo List',
-			Icon: ListTodo,
-			isActive: () => editor.isActive('todosList')
+			value: 'heading2',
+			label: 'Heading Two',
+			Icon: Heading2Icon,
+			act: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+			isActive: () => editor.isActive('heading', { level: 2 })
 		}
 	];
 
+	let { editor }: Props = $props();
+
+	let type = $state<Type>('none');
 	let open = $state(false);
 
 	function setValue(newValue: string) {
 		console.log({ newValue });
 		switch (newValue) {
 			case undefined:
-			case 'none':
 			case null: {
 				editor.chain().focus().toggleBulletList().run();
 				break;
@@ -53,44 +44,32 @@
 				editor.chain().focus().toggleBulletList().run();
 				editor.chain().focus().toggleBulletList().run();
 				break;
-			case 'bulletList': {
-				editor.chain().focus().toggleBulletList().run();
-				break;
-			}
-			case 'todosList': {
-				editor.chain().focus().toggleTaskList().run();
-				break;
-			}
-			case 'orderedList': {
-				editor.chain().focus().toggleOrderedList().run();
-				break;
-			}
 			default:
-				throw new Error(`cannot handle '${newValue}'`);
+				options.find((v) => v.value === newValue)[0].act();
 		}
 	}
 
-	const isDeselected = $derived(model.list == 'none' || model.list == null);
-	const TriggerContent = $derived(options.find((f) => f.value === model.list)?.Icon ?? List);
+	const isDeselected = $derived(type == 'none');
+	const TriggerContent = $derived(options.find((f) => f.value === type)?.Icon);
 </script>
 
 <Select.Root
 	type="single"
 	name="paragraph"
 	bind:open={() => open, (_open) => (open = _open)}
-	bind:value={() => model.list, setValue}
+	bind:value={() => type, setValue}
 	allowDeselect
 >
 	<Select.Trigger
 		class={[
 			'm-0 flex h-5.5 items-center gap-0 rounded-sm border-0 p-1',
-			!isDeselected ? 'text-purple-500' : ''
+			!isDeselected ? 'text-purple-500' : 'text-slate-500'
 		]}
 	>
 		{#if isDeselected}
-			<List class={[' size-4.5']} />
+			<HeadingIcon class="size-4.5" />
 		{:else}
-			<TriggerContent class={['size-4.5 ']} />
+			<TriggerContent class={'size-4.5 '} />
 		{/if}
 		<ChevronDown class={['ml-0.5 size-2.5']} />
 	</Select.Trigger>
@@ -119,7 +98,7 @@
                data-disabled:opacity-50 data-highlighted:bg-muted
                dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
                `,
-							model.list === heading.value ? 'is-active' : ''
+							type === heading.value ? 'is-active' : ''
 						]}
 					>
 						<heading.Icon class="size-5 shrink-0 grow-0" />

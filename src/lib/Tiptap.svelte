@@ -24,6 +24,7 @@
 
 <div class="bg-blue-200">
 	<pre>{JSON.stringify(model?.active)}</pre>
+	<div>List: {model?.list}</div>
 </div>
 <div style="position: relative" class="app">
 	{#if model != null}

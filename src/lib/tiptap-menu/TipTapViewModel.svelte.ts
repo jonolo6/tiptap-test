@@ -1,11 +1,13 @@
 import { Editor, type Content } from '@tiptap/core';
 import { StarterKit } from '@tiptap/starter-kit';
 
+const lists = ['bulletList', 'orderedList', 'todosList'];
 const active_states = ['bold', 'italic', 'strike'];
 
 export class TiptapViewModel {
 	editor = $state() as Editor;
 
+	list = $state('none');
 	active = $state<Record<string, boolean>>({});
 
 	constructor(element: HTMLElement, content: Content) {
@@ -30,6 +32,12 @@ export class TiptapViewModel {
 	#updateInternalState() {
 		active_states.forEach((state) => {
 			this.active[state] = this.editor.isActive(state);
+		});
+		this.list = 'none';
+		lists.forEach((list_type) => {
+			if (this.editor.isActive(list_type)) {
+				this.list = list_type;
+			}
 		});
 	}
 
