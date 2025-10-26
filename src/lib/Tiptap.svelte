@@ -1,8 +1,10 @@
 <script lang="ts">
+	import type { Content } from '@tiptap/core';
 	import { onMount } from 'svelte';
+
 	import TiptapMenu from './TiptapMenu.svelte';
 	import { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
-	import type { Content } from '@tiptap/core';
+	import { Separator } from './components/ui/sidebar';
 
 	let {
 		content = `
@@ -24,16 +26,19 @@
 	});
 </script>
 
-<div class="bg-blue-200">
+<div class="rounded border border-blue-200 bg-blue-100 px-2 py-1 text-sm shadow">
 	<pre>{JSON.stringify(model?.active)}</pre>
 	<div>List: {model?.list}</div>
 </div>
+
+<Separator class="mt-2" />
+
 <div style="position: relative" class="app">
 	{#if model != null}
 		<TiptapMenu {model} class="mx-2 my-2" />
 	{/if}
 
-	<div bind:this={element}></div>
+	<div bind:this={element} class="px-4 py-4"></div>
 </div>
 
 <style>
