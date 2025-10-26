@@ -10,12 +10,19 @@ export class TiptapViewModel {
 	list = $state('none');
 	active = $state<Record<string, boolean>>({});
 
-	constructor(element: HTMLElement, content: Content) {
+	constructor(
+		element: HTMLElement,
+		content: Content,
+		onUpdate?: (viewModel: TiptapViewModel) => void
+	) {
 		this.editor = new Editor({
 			element,
 			extensions: [StarterKit],
 			content,
-			onUpdate: () => this.#updateInternalState(),
+			onUpdate: () => {
+				this.#updateInternalState();
+				onUpdate?.(this);
+			},
 			onSelectionUpdate: () => this.#updateInternalState()
 			// onTransaction: ({ editor: _editor }) => {
 			// Increment the state signal to force a re-render

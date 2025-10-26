@@ -2,20 +2,22 @@
 	import { onMount } from 'svelte';
 	import TiptapMenu from './TiptapMenu.svelte';
 	import { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
+	import type { Content } from '@tiptap/core';
 
 	let {
 		content = `
         <h1>Hello Svelte! 🌍️ </h1>
         <p>This editor is running in Svelte.</p>
         <p>Select some text to see the bubble menu popping up.</p>
-      `
-	} = $props();
+      `,
+		onUpdate
+	}: { content: Content; onUpdate: (model: TiptapViewModel) => void } = $props();
 
 	let element = $state<HTMLDivElement>();
 
 	let model = $state<TiptapViewModel>();
 	onMount(() => {
-		model = new TiptapViewModel(element!, content);
+		model = new TiptapViewModel(element!, content, onUpdate);
 		return () => {
 			model?.destroy();
 		};
