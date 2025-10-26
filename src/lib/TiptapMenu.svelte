@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { Editor } from '@tiptap/core';
+	// import HeadingOneIcon from '@lucide/svelte/icons/heading-1';
+	import { Heading1 } from 'lucide-svelte';
+	// import HeadingOneIcon from '@lucide/svelte/icons/heading-1';
 
 	let { editor }: { editor: Editor } = $props();
 </script>
@@ -9,7 +12,7 @@
 		onclick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
 		class:active={editor.isActive('heading', { level: 1 })}
 	>
-		H1
+		<Heading1 size="18" />
 	</button>
 	<button
 		onclick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
