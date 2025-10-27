@@ -1,19 +1,18 @@
 <script lang="ts">
-	import { Toggle, ToggleGroup } from 'bits-ui';
+	import { Toggle } from 'bits-ui';
+	import type { ClassValue } from 'svelte/elements';
+
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import {
 		BoldIcon,
 		Heading1Icon,
 		Heading2Icon,
 		ItalicIcon,
 		StrikethroughIcon
-	} from 'lucide-svelte';
-	import { onMount } from 'svelte';
-	import type { ClassValue } from 'svelte/elements';
-
-	import Separator from '$lib/components/ui/separator/separator.svelte';
+	} from '@lucide/svelte';
+	import HeadingSelect from './tiptap-menu/HeadingSelect.svelte';
 	import ListSelect from './tiptap-menu/ListSelect.svelte';
 	import type { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
-	import HeadingSelect from './tiptap-menu/HeadingSelect.svelte';
 
 	let { model, class: classValue }: { model: TiptapViewModel; class?: ClassValue } = $props();
 
