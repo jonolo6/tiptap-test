@@ -5,6 +5,7 @@
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import {
 		Content,
+		Footer,
 		Group,
 		GroupContent,
 		GroupLabel,
@@ -17,6 +18,7 @@
 	import type { ComponentProps } from 'svelte';
 	import NoteMenuItem from './NoteMenuItem.svelte';
 	import { left_sidebar_data, type NavGroup } from './test-data';
+	import DarkSwitchMenu from '$lib/components/ui/DarkSwitchMenu.svelte';
 
 	type Props = { data?: { navMain: NavGroup[] } };
 
@@ -61,5 +63,8 @@
 			</Collapsible.Root>
 		{/each}
 	</Content>
+	<Footer>
+		<DarkSwitchMenu />
+	</Footer>
 	<Rail />
 </Root>

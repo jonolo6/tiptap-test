@@ -48,6 +48,7 @@
 		"@tiptap/extension-bubble-menu": "^3.8.0",
 		"@tiptap/pm": "^3.8.0",
 		"@tiptap/starter-kit": "^3.8.0",
-		"bits-ui": "^2.14.1"
+		"bits-ui": "^2.14.1",
+		"mode-watcher": "^1.1.0"
 	}
 }

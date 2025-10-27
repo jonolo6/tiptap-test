@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { ModeWatcher } from 'mode-watcher';
+
 	import favicon from '$lib/assets/favicon.svg';
 	import { Inset, Provider, Trigger } from '$lib/components/ui/sidebar';
 	import LeftSidebar from './(app-sidebar)/LeftSidebar.svelte';
@@ -13,6 +15,8 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
+
+<ModeWatcher />
 
 <Provider>
 	<LeftSidebar />
