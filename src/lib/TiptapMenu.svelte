@@ -41,7 +41,7 @@
 	let _state = $state({}) as Record<string, { active: boolean; can: boolean }>;
 </script>
 
-<Menubar.Root>
+<Menubar.Root class={[classValue]}>
 	<HeadingMenu {editor} />
 	<Menubar.Menu>
 		<Menubar.Trigger>Edit</Menubar.Trigger>

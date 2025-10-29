@@ -43,14 +43,14 @@
 	</Item.Actions>
 </Item.Root>
 
-<Separator class="mt-2" />
+<div class={['rounded-lg border border-border p-1', 'mt-2']}>
+	<div>
+		{#if model != null}
+			<TiptapMenu {model} class="mx-1 my-0.5 bg-muted/40" />
+		{/if}
 
-<div style="position: relative" class="app">
-	{#if model != null}
-		<TiptapMenu {model} class="mx-2 my-2" />
-	{/if}
-
-	<div bind:this={element} class="px-4 py-4"></div>
+		<div bind:this={element} class="rounded px-4 py-4"></div>
+	</div>
 </div>
 
 <style>
