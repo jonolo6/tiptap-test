@@ -22,3 +22,4 @@
 		<Tiptap {content} onUpdate={(m) => saveContent(m.editor.getJSON())} />
 	{/if}
 </main>
+pnpm dlx shadcn-svelte@latest add tooltip
