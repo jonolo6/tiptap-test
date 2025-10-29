@@ -38,7 +38,9 @@
 	let _state = $state({}) as Record<string, { active: boolean; can: boolean }>;
 </script>
 
-<div class={['fixed-menu flex items-center rounded-lg border px-2 py-0.5', classValue]}>
+<div
+	class={['fixed-menu flex items-center rounded-lg border border-muted px-2 py-0.5', classValue]}
+>
 	<HeadingSelect {editor} />
 
 	<Separator orientation="vertical" class="mx-3 py-2.5" />

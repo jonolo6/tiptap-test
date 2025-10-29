@@ -97,8 +97,8 @@
 
 	<Select.Portal>
 		<Select.Content
-			class={`focus-override z-50 rounded-xl border 
-      border-slate-100  bg-background px-0.5 py-2
+			class={`focus-override z-50 rounded-lg border 
+      border-border bg-background px-0.5 py-2
       shadow-popover outline-hidden select-none data-[side=bottom]:translate-y-1
       data-[side=bottom]:slide-in-from-top-2 data-[side=left]:-translate-x-1 
       data-[side=left]:slide-in-from-right-2 data-[side=right]:translate-x-1 
@@ -122,8 +122,10 @@
 							model.list === heading.value ? 'is-active' : ''
 						]}
 					>
-						<heading.Icon class="size-5 shrink-0 grow-0" />
-						{heading.label}
+						<heading.Icon class="size-4.5 shrink-0 grow-0" />
+						<span class="ml-1">
+							{heading.label}
+						</span>
 					</Select.Item>
 				{/each}
 			</Select.Group>
