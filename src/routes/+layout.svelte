@@ -23,7 +23,7 @@
 	<Inset>
 		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
 			<Trigger class="-ml-1" />
-			<Separator orientation="vertical" class="mr-2 h-4" />
+			<!-- <Separator orientation="vertical" class="mr-2 h-4" /> -->
 			<!-- <Breadcrumb.Root> -->
 			<!-- 	<Breadcrumb.List> -->
 			<!-- 		<Breadcrumb.Item class="hidden md:block"> -->
@@ -36,16 +36,18 @@
 			<!-- 	</Breadcrumb.List> -->
 			<!-- </Breadcrumb.Root> -->
 		</header>
-		<div class="flex flex-1 flex-col gap-4 p-4">
-			<div class="grid auto-rows-min gap-4 md:grid-cols-3">
-				<div class="aspect-video rounded-xl bg-muted/50"></div>
-				<div class="aspect-video rounded-xl bg-muted/50"></div>
-				<div class="aspect-video rounded-xl bg-muted/50"></div>
-			</div>
+		<main>
+			<!-- <div class="flex flex-1 flex-col gap-4 p-4"> -->
+			<!-- 	<div class="grid auto-rows-min gap-4 md:grid-cols-3"> -->
+			<!-- 		<div class="aspect-video rounded-xl bg-muted/50"></div> -->
+			<!-- 		<div class="aspect-video rounded-xl bg-muted/50"></div> -->
+			<!-- 		<div class="aspect-video rounded-xl bg-muted/50"></div> -->
+			<!-- 	</div> -->
 			<!-- <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min"> -->
-			<div class="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
-				{@render children?.()}
-			</div>
-		</div>
+			<!-- <div class="min-h-[100vh] flex-1 rounded-xl md:min-h-min"> -->
+			{@render children?.()}
+			<!-- </div> -->
+			<!-- </div> -->
+		</main>
 	</Inset>
 </Provider>

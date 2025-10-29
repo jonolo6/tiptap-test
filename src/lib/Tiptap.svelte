@@ -2,9 +2,12 @@
 	import type { Content } from '@tiptap/core';
 	import { onMount } from 'svelte';
 
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Item from '$lib/components/ui/item/index.js';
 	import TiptapMenu from './TiptapMenu.svelte';
-	import { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
 	import { Separator } from './components/ui/sidebar';
+	import { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
+	import Button from './components/ui/button/button.svelte';
 
 	let {
 		content = `
@@ -26,10 +29,19 @@
 	});
 </script>
 
-<div class="rounded border border-blue-200 bg-blue-100 px-2 py-1 text-sm shadow">
-	<pre>{JSON.stringify(model?.active)}</pre>
-	<div>List: {model?.list}</div>
-</div>
+<Item.Root variant="muted">
+	<Item.Content>
+		<Item.Title>Debug info</Item.Title>
+		<Item.Description>
+			<pre>{JSON.stringify(model?.active)}</pre>
+			<div>List: {model?.list}</div>
+			Subdued appearance with muted colors for secondary content.</Item.Description
+		>
+	</Item.Content>
+	<Item.Actions>
+		<Button variant="outline" size="sm">Open</Button>
+	</Item.Actions>
+</Item.Root>
 
 <Separator class="mt-2" />
 

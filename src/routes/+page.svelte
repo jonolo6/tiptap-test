@@ -17,9 +17,8 @@
 	}
 </script>
 
-<main>
+<main class="px-4">
 	{#if content != null}
 		<Tiptap {content} onUpdate={(m) => saveContent(m.editor.getJSON())} />
 	{/if}
 </main>
-pnpm dlx shadcn-svelte@latest add tooltip

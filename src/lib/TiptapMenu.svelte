@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Toggle } from 'bits-ui';
+	// import { Toggle } from 'bits-ui';
 	import type { ClassValue } from 'svelte/elements';
 
 	import Separator from '$lib/components/ui/separator/separator.svelte';
@@ -12,7 +12,10 @@
 	} from '@lucide/svelte';
 	import HeadingSelect from './tiptap-menu/HeadingSelect.svelte';
 	import ListSelect from './tiptap-menu/ListSelect.svelte';
+	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
 	import type { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
+	import * as Menubar from '$lib/components/ui/menubar/index.js';
+	import HeadingMenu from './tiptap-menu/HeadingMenu.svelte';
 
 	let { model, class: classValue }: { model: TiptapViewModel; class?: ClassValue } = $props();
 
@@ -38,70 +41,86 @@
 	let _state = $state({}) as Record<string, { active: boolean; can: boolean }>;
 </script>
 
-<div
-	class={['fixed-menu flex items-center rounded-lg border border-muted px-2 py-0.5', classValue]}
->
-	<HeadingSelect {editor} />
+<Menubar.Root>
+	<HeadingMenu {editor} />
+	<Menubar.Menu>
+		<Menubar.Trigger>Edit</Menubar.Trigger>
+		<Menubar.Content>
+			<Menubar.Item>
+				Undo <Menubar.Shortcut>⌘Z</Menubar.Shortcut>
+			</Menubar.Item>
+			<Menubar.Item>
+				Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut>
+			</Menubar.Item>
+			<Menubar.Separator />
+			<Menubar.Sub>
+				<Menubar.SubTrigger>Find</Menubar.SubTrigger>
+				<Menubar.SubContent>
+					<Menubar.Item>Search the web</Menubar.Item>
+					<Menubar.Separator />
+					<Menubar.Item>Find...</Menubar.Item>
+					<Menubar.Item>Find Next</Menubar.Item>
+					<Menubar.Item>Find Previous</Menubar.Item>
+				</Menubar.SubContent>
+			</Menubar.Sub>
+			<Menubar.Separator />
+			<Menubar.Item>Cut</Menubar.Item>
+			<Menubar.Item>Copy</Menubar.Item>
+			<Menubar.Item>Paste</Menubar.Item>
+		</Menubar.Content>
+	</Menubar.Menu>
+</Menubar.Root>
 
-	<Separator orientation="vertical" class="mx-3 py-2.5" />
-
-	<ListSelect {model} />
-
-	<Separator orientation="vertical" class="mx-3 py-2.5" />
-
-	<div class="flex items-center">
-		<Toggle.Root
-			aria-label="toggle bold"
-			value="bold"
-			bind:pressed={
-				() => model.active['bold'] ?? false,
-				() => {
-					editor.chain().focus().toggleBold().run();
-				}
-			}
-			class={[
-				`bg-background-alt active:bg-dark-10 data-[state=off]:text-foreground-alt 
-active:data-[state=on]:bg-dark-10 inline-flex size-7 items-center justify-center rounded 
-          transition-all hover:bg-muted active:scale-[0.98] 
-          data-[state=on]:bg-muted data-[state=on]:text-foreground`
-			]}
-		>
-			<BoldIcon class="size-4" />
-		</Toggle.Root>
-		<Toggle.Root
-			aria-label="toggle italic"
-			value="italic"
-			bind:pressed={
-				() => model.active['italic'] ?? false,
-				() => {
-					editor.chain().focus().toggleItalic().run();
-				}
-			}
-			class={`bg-background-alt active:bg-dark-10 data-[state=off]:text-foreground-alt 
-active:data-[state=on]:bg-dark-10 inline-flex size-7 items-center justify-center rounded 
-transition-all hover:bg-muted active:scale-[0.98] 
-data-[state=on]:bg-muted data-[state=on]:text-foreground`}
-		>
-			<ItalicIcon class="size-4" />
-		</Toggle.Root>
-		<Toggle.Root
-			aria-label="toggle strikethrough"
-			value="strikethrough"
-			bind:pressed={
-				() => model.active['strike'] ?? false,
-				() => {
-					editor.chain().focus().toggleStrike().run();
-				}
-			}
-			class={`bg-background-alt active:bg-dark-10 data-[state=off]:text-foreground-alt 
-active:data-[state=on]:bg-dark-10 inline-flex size-7 items-center justify-center rounded 
-transition-all hover:bg-muted active:scale-[0.98] 
-data-[state=on]:bg-muted data-[state=on]:text-foreground`}
-		>
-			<StrikethroughIcon class="size-4" />
-		</Toggle.Root>
-	</div>
-</div>
+<!-- <div -->
+<!-- 	class={['fixed-menu flex items-center rounded-lg border border-muted px-2 py-0.5', classValue]} -->
+<!-- > -->
+<!-- 	<HeadingSelect {editor} /> -->
+<!---->
+<!-- 	<Separator orientation="vertical" class="mx-3 py-2.5" /> -->
+<!---->
+<!-- 	<ListSelect {model} /> -->
+<!---->
+<!-- 	<Separator orientation="vertical" class="mx-3 py-2.5" /> -->
+<!---->
+<!-- 	<div class="flex items-center"> -->
+<!-- 		<Toggle -->
+<!-- 			size="sm" -->
+<!-- 			class="p-0" -->
+<!-- 			bind:pressed={ -->
+<!-- 				() => model.active['bold'] ?? false, -->
+<!-- 				() => { -->
+<!-- 					editor.chain().focus().toggleBold().run(); -->
+<!-- 				} -->
+<!-- 			} -->
+<!-- 		> -->
+<!-- 			<BoldIcon class="size-4" /> -->
+<!-- 		</Toggle> -->
+<!-- 		<Toggle -->
+<!-- 			size="sm" -->
+<!-- 			class="p-0" -->
+<!-- 			bind:pressed={ -->
+<!-- 				() => model.active['italic'] ?? false, -->
+<!-- 				() => { -->
+<!-- 					editor.chain().focus().toggleItalic().run(); -->
+<!-- 				} -->
+<!-- 			} -->
+<!-- 		> -->
+<!-- 			<ItalicIcon class="size-4" /> -->
+<!-- 		</Toggle> -->
+<!-- 		<Toggle -->
+<!-- 			size="sm" -->
+<!-- 			class="p-0" -->
+<!-- 			bind:pressed={ -->
+<!-- 				() => model.active['strike'] ?? false, -->
+<!-- 				() => { -->
+<!-- 					editor.chain().focus().toggleStrike().run(); -->
+<!-- 				} -->
+<!-- 			} -->
+<!-- 		> -->
+<!-- 			<StrikethroughIcon class="size-4" /> -->
+<!-- 		</Toggle> -->
+<!-- 	</div> -->
+<!-- </div> -->
 
 <style>
 	@reference "tailwindcss";
