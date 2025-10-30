@@ -23,7 +23,7 @@
 			Icon: ListOrderedIcon
 		},
 		{
-			value: 'todosList',
+			value: 'taskList',
 			label: 'Todo List',
 			Icon: ListTodoIcon
 		}
@@ -43,7 +43,7 @@
 		{:else}
 			<TriggerContent class={'size-4.5 '} />
 		{/if}
-		<ChevronDown class={['ml-0.5 size-2.5 text-muted-foreground']} />
+		<ChevronDown class={['ml-1.5 size-2.5 text-muted-foreground']} />
 	</Menubar.Trigger>
 	<Menubar.Content>
 		{#each listOptions as option (option.value)}

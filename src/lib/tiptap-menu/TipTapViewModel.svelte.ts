@@ -22,7 +22,7 @@ const lists = [
 		toggle: (editor: Editor) => editor.chain().focus().toggleOrderedList().run()
 	},
 	{
-		key: 'todosList',
+		key: 'taskList',
 		toggle: (editor: Editor) => editor.chain().focus().toggleTaskList().run()
 	}
 ];
@@ -83,7 +83,7 @@ export class TiptapViewModel {
 				Text,
 				UndoRedo,
 				UniqueID.configure({
-					types: ['heading', 'paragraph', 'taskItem']
+					types: ['taskItem']
 				})
 			],
 			content,

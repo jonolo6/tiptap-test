@@ -1,11 +1,9 @@
 <script lang="ts">
 	import {
 		EllipsisIcon,
-		FileIcon,
 		FileTextIcon,
 		FolderIcon,
 		FolderOpenIcon,
-		PlusIcon,
 		Trash2Icon
 	} from '@lucide/svelte';
 
