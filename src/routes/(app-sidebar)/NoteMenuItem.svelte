@@ -2,6 +2,7 @@
 	import {
 		EllipsisIcon,
 		FileIcon,
+		FileTextIcon,
 		FolderIcon,
 		FolderOpenIcon,
 		PlusIcon,
@@ -33,7 +34,7 @@
 		<DropdownMenu.Root>
 			<MenuButton isActive={item.isActive} class={['group/menu-btn']}>
 				<!-- {#snippet child({ props })} -->
-				<FileIcon />
+				<FileTextIcon />
 				<a href={item.url}>{item.title}</a>
 				<!-- <a href={item.url} {...props}>{item.title}</a> -->
 				<!-- {/snippet} -->
