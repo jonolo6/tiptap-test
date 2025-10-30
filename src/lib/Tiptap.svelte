@@ -32,21 +32,21 @@
 <Item.Root variant="muted">
 	<Item.Content>
 		<Item.Title>Debug info</Item.Title>
-		<Item.Description>
+		<Item.Description class="flex flex-col">
 			<pre>{JSON.stringify(model?.active)}</pre>
 			<div>List: {model?.list}</div>
-			Subdued appearance with muted colors for secondary content.</Item.Description
-		>
+			<div>Heading: {model?.heading}</div>
+		</Item.Description>
 	</Item.Content>
 	<Item.Actions>
 		<Button variant="outline" size="sm">Open</Button>
 	</Item.Actions>
 </Item.Root>
 
-<div class={['rounded-lg border border-border p-1', 'mt-2']}>
+<div class={['rounded-lg border border-border', 'mt-2']}>
 	<div>
 		{#if model != null}
-			<TiptapMenu {model} class="mx-1 my-0.5 bg-muted/40" />
+			<TiptapMenu {model} class="" />
 		{/if}
 
 		<div bind:this={element} class="rounded px-4 py-4"></div>

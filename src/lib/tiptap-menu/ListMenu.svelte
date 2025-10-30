@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChevronDown, Heading1Icon, Heading2Icon, HeadingIcon } from '@lucide/svelte/icons';
+	import { ChevronDown, ListIcon, ListOrderedIcon, ListTodoIcon } from '@lucide/svelte/icons';
 
 	import * as Menubar from '$lib/components/ui/menubar/index.js';
 	import type { TiptapViewModel } from './TipTapViewModel.svelte';
@@ -11,41 +11,51 @@
 
 	let { model }: Props = $props();
 
-	const headingOptions = [
+	const listOptions = [
 		{
-			value: 'heading1',
-			label: 'Heading One',
-			Icon: Heading1Icon
+			value: 'bulletList',
+			label: 'Bullet List',
+			Icon: ListIcon
 		},
 		{
-			value: 'heading2',
-			label: 'Heading Two',
-			Icon: Heading2Icon
+			value: 'orderedList',
+			label: 'Ordered List',
+			Icon: ListOrderedIcon
+		},
+		{
+			value: 'todosList',
+			label: 'Todo List',
+			Icon: ListTodoIcon
 		}
 	];
 
-	let type = $derived<Type>(model.heading as Type);
+	let type = $derived<Type>(model.list as Type);
 
 	const isDeselected = $derived(type == 'none');
 	const isSelected = $derived(!isDeselected);
-	const TriggerContent = $derived(headingOptions.find((f) => f.value === type)?.Icon);
+	const TriggerContent = $derived(listOptions.find((f) => f.value === type)?.Icon);
 </script>
 
 <Menubar.Menu>
 	<Menubar.Trigger class={[isSelected && 'bg-accent']}>
 		{#if isDeselected}
-			<HeadingIcon class="size-4.5" />
+			<ListIcon class="size-4.5" />
 		{:else}
 			<TriggerContent class={'size-4.5 '} />
 		{/if}
 		<ChevronDown class={['ml-0.5 size-2.5 text-muted-foreground']} />
 	</Menubar.Trigger>
 	<Menubar.Content>
-		{#each headingOptions as option (option.value)}
+		{#each listOptions as option (option.value)}
 			<Menubar.CheckboxItem
 				class={[type === option.value && 'bg-accent']}
 				bind:checked={
-					() => type === (option.value as Type), (_newValue) => model.setHeading(option.value)
+					() => {
+						return type === (option.value as Type);
+					},
+					(_newValue) => {
+						model.setList(option.value);
+					}
 				}
 			>
 				{#snippet child({ checked })}

@@ -19,12 +19,20 @@
 	}
 
 	/* Remove padding between nested lists */
+	ul ul,
 	li > ul,
 	li > ol {
 		padding-top: 0;
 		padding-bottom: 0;
 		margin-top: 0rem;
 		margin-bottom: 0rem;
+		/* border: 2px solid red; */
+	}
+	ul {
+		padding-left: 1.2em;
+	}
+	ul[data-type='taskList'] {
+		padding-left: 0px;
 	}
 
 	ol ::marker {

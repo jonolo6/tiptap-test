@@ -20,18 +20,21 @@
 		{
 			value: 'bulletList',
 			label: 'Bullet List',
+			toggle: () => editor.chain().focus().toggleBulletList().run(),
 			Icon: List,
 			isActive: () => editor.isActive('bulletList')
 		},
 		{
 			value: 'orderedList',
 			label: 'Ordered List',
+			toggle: () => editor.chain().focus().toggleOrderedList().run(),
 			Icon: ListOrdered,
 			isActive: () => editor.isActive('orderedList')
 		},
 		{
 			value: 'todosList',
 			label: 'Todo List',
+			toggle: () => editor.chain().focus().toggleTaskList().run(),
 			Icon: ListTodo,
 			isActive: () => editor.isActive('todosList')
 		}
@@ -54,15 +57,13 @@
 				editor.chain().focus().toggleBulletList().run();
 				break;
 			case 'bulletList': {
-				editor.chain().focus().toggleBulletList().run();
 				break;
 			}
 			case 'todosList': {
-				editor.chain().focus().toggleTaskList().run();
 				break;
 			}
 			case 'orderedList': {
-				editor.chain().focus().toggleOrderedList().run();
+				options.find(({ value }) => value === newValue)?.toggle();
 				break;
 			}
 			default:

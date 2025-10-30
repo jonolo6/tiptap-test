@@ -16,6 +16,7 @@
 	import type { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
 	import * as Menubar from '$lib/components/ui/menubar/index.js';
 	import HeadingMenu from './tiptap-menu/HeadingMenu.svelte';
+	import ListMenu from './tiptap-menu/ListMenu.svelte';
 
 	let { model, class: classValue }: { model: TiptapViewModel; class?: ClassValue } = $props();
 
@@ -42,71 +43,66 @@
 </script>
 
 <Menubar.Root class={[classValue]}>
-	<HeadingMenu {editor} />
-	<Menubar.Menu>
-		<Menubar.Trigger>Edit</Menubar.Trigger>
-		<Menubar.Content>
-			<Menubar.Item>
-				Undo <Menubar.Shortcut>⌘Z</Menubar.Shortcut>
-			</Menubar.Item>
-			<Menubar.Item>
-				Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut>
-			</Menubar.Item>
-			<Menubar.Separator />
-			<Menubar.Sub>
-				<Menubar.SubTrigger>Find</Menubar.SubTrigger>
-				<Menubar.SubContent>
-					<Menubar.Item>Search the web</Menubar.Item>
-					<Menubar.Separator />
-					<Menubar.Item>Find...</Menubar.Item>
-					<Menubar.Item>Find Next</Menubar.Item>
-					<Menubar.Item>Find Previous</Menubar.Item>
-				</Menubar.SubContent>
-			</Menubar.Sub>
-			<Menubar.Separator />
-			<Menubar.Item>Cut</Menubar.Item>
-			<Menubar.Item>Copy</Menubar.Item>
-			<Menubar.Item>Paste</Menubar.Item>
-		</Menubar.Content>
-	</Menubar.Menu>
+	<HeadingMenu {model} />
+	<ListMenu {model} />
+	<!-- <Separator orientation="vertical" class="mx-2" /> -->
+	<Toggle
+		size="sm"
+		class="ml-4 p-0"
+		bind:pressed={
+			() => model.active['bold'] ?? false, () => editor.chain().focus().toggleBold().run()
+		}
+	>
+		<BoldIcon class="size-4" />
+	</Toggle>
+
+	<Toggle
+		size="sm"
+		class="p-0"
+		bind:pressed={
+			() => model.active['italic'] ?? false, () => editor.chain().focus().toggleItalic().run()
+		}
+	>
+		<ItalicIcon class="size-4" />
+	</Toggle>
+	<Toggle
+		size="sm"
+		class="p-0"
+		bind:pressed={
+			() => model.active['strike'] ?? false, () => editor.chain().focus().toggleStrike().run()
+		}
+	>
+		<StrikethroughIcon class="size-4" />
+	</Toggle>
+
+	<!-- <Menubar.Menu> -->
+	<!-- 	<Menubar.Trigger>Edit</Menubar.Trigger> -->
+	<!-- 	<Menubar.Content> -->
+	<!-- 		<Menubar.Item> -->
+	<!-- 			Undo <Menubar.Shortcut>⌘Z</Menubar.Shortcut> -->
+	<!-- 		</Menubar.Item> -->
+	<!-- 		<Menubar.Item> -->
+	<!-- 			Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut> -->
+	<!-- 		</Menubar.Item> -->
+	<!-- 		<Menubar.Separator /> -->
+	<!-- 		<Menubar.Sub> -->
+	<!-- 			<Menubar.SubTrigger>Find</Menubar.SubTrigger> -->
+	<!-- 			<Menubar.SubContent> -->
+	<!-- 				<Menubar.Item>Search the web</Menubar.Item> -->
+	<!-- 				<Menubar.Separator /> -->
+	<!-- 				<Menubar.Item>Find...</Menubar.Item> -->
+	<!-- 				<Menubar.Item>Find Next</Menubar.Item> -->
+	<!-- 				<Menubar.Item>Find Previous</Menubar.Item> -->
+	<!-- 			</Menubar.SubContent> -->
+	<!-- 		</Menubar.Sub> -->
+	<!-- 		<Menubar.Separator /> -->
+	<!-- 		<Menubar.Item>Cut</Menubar.Item> -->
+	<!-- 		<Menubar.Item>Copy</Menubar.Item> -->
+	<!-- 		<Menubar.Item>Paste</Menubar.Item> -->
+	<!-- 	</Menubar.Content> -->
+	<!-- </Menubar.Menu> -->
 </Menubar.Root>
 
-<!-- <div -->
-<!-- 	class={['fixed-menu flex items-center rounded-lg border border-muted px-2 py-0.5', classValue]} -->
-<!-- > -->
-<!-- 	<HeadingSelect {editor} /> -->
-<!---->
-<!-- 	<Separator orientation="vertical" class="mx-3 py-2.5" /> -->
-<!---->
-<!-- 	<ListSelect {model} /> -->
-<!---->
-<!-- 	<Separator orientation="vertical" class="mx-3 py-2.5" /> -->
-<!---->
-<!-- 	<div class="flex items-center"> -->
-<!-- 		<Toggle -->
-<!-- 			size="sm" -->
-<!-- 			class="p-0" -->
-<!-- 			bind:pressed={ -->
-<!-- 				() => model.active['bold'] ?? false, -->
-<!-- 				() => { -->
-<!-- 					editor.chain().focus().toggleBold().run(); -->
-<!-- 				} -->
-<!-- 			} -->
-<!-- 		> -->
-<!-- 			<BoldIcon class="size-4" /> -->
-<!-- 		</Toggle> -->
-<!-- 		<Toggle -->
-<!-- 			size="sm" -->
-<!-- 			class="p-0" -->
-<!-- 			bind:pressed={ -->
-<!-- 				() => model.active['italic'] ?? false, -->
-<!-- 				() => { -->
-<!-- 					editor.chain().focus().toggleItalic().run(); -->
-<!-- 				} -->
-<!-- 			} -->
-<!-- 		> -->
-<!-- 			<ItalicIcon class="size-4" /> -->
-<!-- 		</Toggle> -->
 <!-- 		<Toggle -->
 <!-- 			size="sm" -->
 <!-- 			class="p-0" -->
