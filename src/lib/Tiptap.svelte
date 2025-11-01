@@ -2,11 +2,9 @@
 	import type { Content } from '@tiptap/core';
 	import { onMount } from 'svelte';
 
-	import * as Card from '$lib/components/ui/card/index.js';
+	import TiptapMenu from '$lib/components/tiptap-menu/TiptapMenu.svelte';
+	import { TiptapViewModel } from '$lib/components/tiptap-menu/TipTapViewModel.svelte';
 	import * as Item from '$lib/components/ui/item/index.js';
-	import TiptapMenu from './TiptapMenu.svelte';
-	import { Separator } from './components/ui/sidebar';
-	import { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
 	import Button from './components/ui/button/button.svelte';
 
 	let {

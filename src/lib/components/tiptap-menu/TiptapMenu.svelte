@@ -10,13 +10,11 @@
 		ItalicIcon,
 		StrikethroughIcon
 	} from '@lucide/svelte';
-	import HeadingSelect from './tiptap-menu/HeadingSelect.svelte';
-	import ListSelect from './tiptap-menu/ListSelect.svelte';
 	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
-	import type { TiptapViewModel } from './tiptap-menu/TipTapViewModel.svelte';
 	import * as Menubar from '$lib/components/ui/menubar/index.js';
-	import HeadingMenu from './tiptap-menu/HeadingMenu.svelte';
-	import ListMenu from './tiptap-menu/ListMenu.svelte';
+	import type { TiptapViewModel } from './TipTapViewModel.svelte';
+	import HeadingMenu from './HeadingMenu.svelte';
+	import ListMenu from './ListMenu.svelte';
 
 	let { model, class: classValue }: { model: TiptapViewModel; class?: ClassValue } = $props();
 

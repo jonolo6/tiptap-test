@@ -10,10 +10,6 @@ import { BulletList, ListItem, OrderedList, TaskItem, TaskList } from '@tiptap/e
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { Dropcursor, UndoRedo } from '@tiptap/extensions';
-import Bold from '@tiptap/extension-bold';
-import Strike from '@tiptap/extension-strike';
-import Italic from '@tiptap/extension-italic';
-
 import UniqueID from '@tiptap/extension-unique-id';
 
 const lists = [
@@ -70,9 +66,6 @@ export class TiptapViewModel {
 			extensions: [
 				Blockquote,
 				BulletList,
-				Bold,
-				Italic,
-				Strike,
 				CodeBlock,
 				Document,
 				Dropcursor,
