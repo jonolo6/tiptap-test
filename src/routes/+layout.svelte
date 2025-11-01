@@ -2,7 +2,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 
 	import favicon from '$lib/assets/favicon.svg';
-	import { Inset, Provider, Trigger } from '$lib/components/ui/sidebar';
+	import * as Sidebar from '$lib/components/ui/sidebar';
 	import LeftSidebar from './(app-sidebar)/LeftSidebar.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 
@@ -18,11 +18,11 @@
 
 <ModeWatcher />
 
-<Provider>
+<Sidebar.Provider>
 	<LeftSidebar />
-	<Inset>
+	<Sidebar.Inset>
 		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-			<Trigger class="-ml-1" />
+			<Sidebar.Trigger class="-ml-1" />
 			<!-- <Separator orientation="vertical" class="mr-2 h-4" /> -->
 			<!-- <Breadcrumb.Root> -->
 			<!-- 	<Breadcrumb.List> -->
@@ -49,5 +49,5 @@
 			<!-- </div> -->
 			<!-- </div> -->
 		</main>
-	</Inset>
-</Provider>
+	</Sidebar.Inset>
+</Sidebar.Provider>

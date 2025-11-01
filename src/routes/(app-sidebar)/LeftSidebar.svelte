@@ -3,16 +3,7 @@
 
 <script lang="ts">
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
-	import {
-		Content,
-		Footer,
-		Group,
-		GroupContent,
-		GroupLabel,
-		Menu,
-		Rail,
-		Root
-	} from '$lib/components/ui/sidebar';
+	import * as Sidebar from '$lib/components/ui/sidebar';
 
 	import { ChevronRightIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
@@ -26,20 +17,20 @@
 		data = left_sidebar_data,
 		ref = $bindable(null),
 		...restProps
-	}: ComponentProps<typeof Root> & Props = $props();
+	}: ComponentProps<typeof Sidebar.Root> & Props = $props();
 </script>
 
-<Root {...restProps} bind:ref>
+<Sidebar.Root {...restProps} bind:ref>
 	<!-- <Header> -->
 	<!-- 	<!-- <VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} /> -->
 	<!-- 	<!-- <SearchForm /> -->
 	<!-- </Header> -->
-	<Content>
+	<Sidebar.Content>
 		{#each data.navMain as group (group.title)}
 			<Collapsible.Root title={group.title} open class="group/collapsible">
-				<Group>
+				<Sidebar.Group>
 					{#if group.title != null}
-						<GroupLabel>
+						<Sidebar.GroupLabel>
 							{#snippet child({ props })}
 								<Collapsible.Trigger {...props}>
 									{group.title}
@@ -48,23 +39,23 @@
 									/>
 								</Collapsible.Trigger>
 							{/snippet}
-						</GroupLabel>
+						</Sidebar.GroupLabel>
 					{/if}
 					<Collapsible.Content>
-						<GroupContent>
-							<Menu>
+						<Sidebar.GroupContent>
+							<Sidebar.Menu>
 								{#each group.items as item (item.title)}
 									<NoteMenuItem {item} />
 								{/each}
-							</Menu>
-						</GroupContent>
+							</Sidebar.Menu>
+						</Sidebar.GroupContent>
 					</Collapsible.Content>
-				</Group>
+				</Sidebar.Group>
 			</Collapsible.Root>
 		{/each}
-	</Content>
-	<Footer>
+	</Sidebar.Content>
+	<Sidebar.Footer>
 		<DarkSwitchMenu />
-	</Footer>
-	<Rail />
-</Root>
+	</Sidebar.Footer>
+	<Sidebar.Rail />
+</Sidebar.Root>
