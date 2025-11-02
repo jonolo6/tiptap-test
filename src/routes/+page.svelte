@@ -31,10 +31,9 @@
 				false && 'border border-green-500'
 			]}
 		>
-			<div class="text-lg font-semibold">Heading...</div>
-			<Separator />
+			<div class="mt-2 text-lg font-semibold">Heading...</div>
 			<div class="text-sm">Properties</div>
-			<Separator />
+			<!-- <Separator /> -->
 			<div class={['relative', false && 'my-2 border border-red-500']}>
 				<Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}>
 					<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} />

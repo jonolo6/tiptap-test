@@ -8,7 +8,7 @@
 		Heading1Icon,
 		Heading2Icon,
 		ItalicIcon,
-		StrikethroughIcon
+		StrikethroughIcon,
 	} from '@lucide/svelte';
 	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
 	import * as Menubar from '$lib/components/ui/menubar/index.js';
@@ -19,25 +19,6 @@
 	let { model, class: classValue }: { model: TiptapViewModel; class?: ClassValue } = $props();
 
 	const editor = $derived(model.editor);
-
-	// TODO: Fix the headings here...
-	const headings = [
-		{
-			Icon: Heading1Icon,
-			key: 'heading-1',
-			can: () => editor.can().toggleHeading({ level: 1 }),
-			active: () => editor.isActive('heading', { level: 1 }),
-			do: () => editor.chain().focus().toggleHeading({ level: 1 }).run()
-		},
-		{
-			Icon: Heading2Icon,
-			key: 'heading-2',
-			can: () => editor.can().toggleHeading({ level: 2 }),
-			active: () => editor.isActive('heading', { level: 2 }),
-			do: () => editor.chain().focus().toggleHeading({ level: 2 }).run()
-		}
-	];
-	let _state = $state({}) as Record<string, { active: boolean; can: boolean }>;
 </script>
 
 <Menubar.Root class={[classValue]}>

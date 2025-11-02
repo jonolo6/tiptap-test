@@ -5,6 +5,8 @@
 	import TiptapMenu from '$lib/components/tiptap-menu/TiptapMenu.svelte';
 	import { TiptapViewModel } from '$lib/components/tiptap-menu/TipTapViewModel.svelte';
 	import type { ClassValue } from 'svelte/elements';
+	import BubbleMenu from './BubbleMenu.svelte';
+	import BubbleMenuCgpt from './BubbleMenuCGPT.svelte';
 
 	let {
 		content = `
@@ -13,7 +15,7 @@
         <p>Select some text to see the bubble menu popping up.</p>
       `,
 		onUpdate,
-		class: classValue
+		class: classValue,
 	}: {
 		content: Content;
 		onUpdate: (model: TiptapViewModel) => void;
@@ -21,6 +23,7 @@
 	} = $props();
 
 	let element = $state<HTMLDivElement>();
+	let bubbleEl = $state<HTMLDivElement>();
 
 	let model = $state<TiptapViewModel>();
 	onMount(() => {
@@ -29,6 +32,9 @@
 			model?.destroy();
 		};
 	});
+
+	let outputHTML = $state('');
+	const editor = $derived(model?.editor);
 </script>
 
 <!-- <Item.Root variant="muted"> -->
@@ -45,6 +51,14 @@
 <!-- 	</Item.Actions> -->
 <!-- </Item.Root> -->
 
+<!-- {#if editor != null} -->
+<BubbleMenuCgpt
+	{editor}
+	class="rounded-xl border bg-white p-2 shadow"
+	shouldShow={({ editor }) => editor.state.selection.from !== editor.state.selection.to}
+></BubbleMenuCgpt>
+<!-- {/if} -->
+<!-- </div> -->
 <div class={[classValue ?? '']}>
 	{#if model != null}
 		<TiptapMenu {model} class="" />
