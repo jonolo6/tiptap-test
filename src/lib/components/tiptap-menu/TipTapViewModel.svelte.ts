@@ -81,10 +81,10 @@ export class TiptapViewModel {
 					nested: true
 				}),
 				Text,
-				UndoRedo,
-				UniqueID.configure({
-					types: ['taskItem']
-				})
+				UndoRedo
+				// UniqueID.configure({
+				// 	types: ['taskItem']
+				// })
 			],
 			content,
 			onUpdate: () => {

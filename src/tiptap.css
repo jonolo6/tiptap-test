@@ -5,11 +5,29 @@
 		margin-top: 0;
 	}
 
-	ul li {
-		list-style-type: disc; /* or circle, square */
+	[data-checked] {
+		display: flex;
+
+		label {
+			padding-right: 0.5em;
+		}
+	}
+
+	/* Fix caret no-show */
+	[data-type='taskList'] p {
+		min-width: 1px;
+	}
+	p:empty::after {
+		content: '';
+		min-width: 1px;
+		display: inline-block; /* Helps ensure min-width is respected */
+	}
+
+	ul:not([data-type='taskList']) li {
+		list-style-type: disc;
 	}
 	ol li {
-		list-style-type: decimal; /* or circle, square */
+		list-style-type: decimal;
 	}
 
 	ul,
@@ -36,7 +54,7 @@
 	}
 
 	ol ::marker {
-		font-weight: 600; /* optional: bold the number */
+		font-weight: 600;
 		font-size: 0.95em;
 		color: oklch(55.4% 0.046 257.417);
 	}
@@ -79,9 +97,7 @@
 
 	/* Code and preformatted text styles */
 	code {
-		/* background-color: var(--purple-light); */
 		border-radius: 0.4rem;
-		/* color: var(--black); */
 		font-size: 0.85rem;
 		padding: 0.25em 0.3em;
 	}
@@ -89,7 +105,6 @@
 	pre {
 		background: var(--black);
 		border-radius: 0.5rem;
-		/* color: var(--white); */
 		font-family: 'JetBrainsMono', monospace;
 		margin: 1.5rem 0;
 		padding: 0.75rem 1rem;
@@ -112,14 +127,6 @@
 		border: none;
 		border-top: 1px solid var(--gray-2);
 		margin: 2rem 0;
-	}
-
-	[data-checked] {
-		display: flex;
-
-		label {
-			padding-right: 0.5em;
-		}
 	}
 
 	/* Unique data id */
