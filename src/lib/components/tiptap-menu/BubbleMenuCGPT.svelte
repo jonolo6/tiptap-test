@@ -120,7 +120,7 @@
 {#if editor != null}
 	<div
 		bind:this={root}
-		class={['flex rounded-lg bg-slate-900 text-sm shadow', true && 'p-1', className]}
+		class={['flex rounded-lg bg-muted text-sm shadow', true && 'p-1', className]}
 		{style}
 		style:visibility="hidden"
 		style:position="absolute"
