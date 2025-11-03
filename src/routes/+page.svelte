@@ -32,17 +32,17 @@
 			]}
 		>
 			<div class="px-4 text-3xl font-semibold">Heading...</div>
-			<div class="px-4 text-sm">
+			<div class="mt-2 px-4 text-sm">
 				<Badge variant="secondary" class="bg-blue-500 dark:bg-blue-600">Project</Badge>
 			</div>
 			<!-- <Separator /> -->
-			<div class={[false && 'border border-red-500']}>
+			<div class={['mt-1', false && 'border border-red-500']}>
 				<!-- <Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}> -->
 				<!-- 	<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} /> -->
 				<!-- </Toggle> -->
 				{#if !hideNotes}
 					<Tiptap
-						class="h-full pb-4"
+						class={['h-full', false && 'border border-red-500']}
 						{content}
 						onUpdate={(m) => saveContent(m.editor.getJSON())}
 						showMenuBar={false}
@@ -54,7 +54,7 @@
 				<a href="/dashboard" class={badgeVariants({ variant: 'secondary' })}>Main</a>
 				<Badge variant="outline">...</Badge>
 			</div>
-			<div class={['mt-2 min-h-20 px-4']}>Tasks...</div>
+			<div class={['mt-6 min-h-20 px-4']}>Tasks...</div>
 		</div>
 	{/if}
 </main>

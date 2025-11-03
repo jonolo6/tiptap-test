@@ -39,7 +39,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class={[classValue, false && 'border border-red-500']}
+	class={[classValue, false && 'border border-orange-500']}
 	onclick={() => model!.editor.commands.focus()}
 >
 	<!-- <Item.Root variant="muted"> -->
@@ -68,7 +68,7 @@
 		<TiptapMenu {model} class="" />
 	{/if}
 
-	<div bind:this={element} class="px-4 py-4"></div>
+	<div bind:this={element} class="h-full px-4 pt-4 pb-8"></div>
 </div>
 
 <style>
