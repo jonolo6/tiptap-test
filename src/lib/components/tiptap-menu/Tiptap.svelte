@@ -58,7 +58,7 @@
 	/>
 {/if}
 <!-- </div> -->
-<div class={[classValue ?? '']}>
+<div class={[classValue ?? '', 'max-w-none', false && 'prose prose-slate dark:prose-invert']}>
 	{#if model != null}
 		<TiptapMenu {model} class="" />
 	{/if}
