@@ -15,10 +15,12 @@
         <p>Select some text to see the bubble menu popping up.</p>
       `,
 		onUpdate,
+		showMenuBar = true,
 		class: classValue,
 	}: {
 		content: Content;
 		onUpdate: (model: TiptapViewModel) => void;
+		showMenuBar?: boolean;
 		class?: ClassValue;
 	} = $props();
 
@@ -34,7 +36,12 @@
 	});
 </script>
 
-<div class={[classValue]}>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	class={[classValue, false && 'border border-red-500']}
+	onclick={() => model!.editor.commands.focus()}
+>
 	<!-- <Item.Root variant="muted"> -->
 	<!-- 	<Item.Content> -->
 	<!-- 		<Item.Title>Debug info</Item.Title> -->
@@ -57,7 +64,7 @@
 	{/if}
 	<!-- </div> -->
 	<!-- <div class={[classValue ?? '', 'max-w-none', false && 'prose prose-slate dark:prose-invert']}> -->
-	{#if model != null}
+	{#if model != null && showMenuBar}
 		<TiptapMenu {model} class="" />
 	{/if}
 

@@ -14,7 +14,7 @@ import Image from '@tiptap/extension-image';
 import { BulletList, ListItem, OrderedList, TaskItem, TaskList } from '@tiptap/extension-list';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
-import { Dropcursor, UndoRedo } from '@tiptap/extensions';
+import { Dropcursor, UndoRedo, Placeholder } from '@tiptap/extensions';
 
 const lists = [
 	{
@@ -100,6 +100,18 @@ export class TiptapViewModel {
 				ListItem,
 				OrderedList,
 				Paragraph,
+				Placeholder.configure({
+					// Use a placeholder:
+					placeholder: 'Notes…',
+					// Use different placeholders depending on the node type:
+					// placeholder: ({ node }) => {
+					//   if (node.type.name === 'heading') {
+					//     return 'What’s the title?'
+					//   }
+
+					//   return 'Can you add some further context?'
+					// },
+				}),
 				Strike,
 				TaskList,
 				TaskItem.configure({

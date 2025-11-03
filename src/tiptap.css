@@ -137,6 +137,14 @@
 		margin: 2rem 0;
 	}
 
+	p.is-editor-empty:first-child::before {
+		@apply text-slate-500;
+		content: attr(data-placeholder);
+		float: left;
+		height: 0;
+		pointer-events: none;
+	}
+
 	/* Unique data id */
 	/* [data-id] { */
 	/* 	border: 2px solid var(--color-blue-500); */

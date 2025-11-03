@@ -27,27 +27,34 @@
 	{#if content != null}
 		<div
 			class={[
-				'grid h-full grid-cols-1 grid-rows-[auto_auto_auto_auto_minmax(40px,1fr)_auto_minmax(40px,1fr)] gap-y-1.5',
+				'grid h-full grid-cols-1 grid-rows-[auto_auto_minmax(40px,1fr)_auto_minmax(0px,1fr)]',
 				false && 'border border-green-500',
 			]}
 		>
-			<div class="mt-2 text-lg font-semibold">Heading...</div>
-			<div class="text-sm">Properties</div>
+			<div class="px-4 text-3xl font-semibold">Heading...</div>
+			<div class="px-4 text-sm">
+				<Badge variant="secondary" class="bg-blue-500 dark:bg-blue-600">Project</Badge>
+			</div>
 			<!-- <Separator /> -->
-			<div class={['relative', false && 'mb-4 border border-red-500']}>
-				<Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}>
-					<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} />
-				</Toggle>
+			<div class={[false && 'border border-red-500']}>
+				<!-- <Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}> -->
+				<!-- 	<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} /> -->
+				<!-- </Toggle> -->
 				{#if !hideNotes}
-					<Tiptap {content} onUpdate={(m) => saveContent(m.editor.getJSON())} />
+					<Tiptap
+						class="h-full pb-4"
+						{content}
+						onUpdate={(m) => saveContent(m.editor.getJSON())}
+						showMenuBar={false}
+					/>
 				{/if}
 			</div>
-			<div class="mb-4">
+			<div class="px-4">
 				<Badge>All</Badge>
 				<a href="/dashboard" class={badgeVariants({ variant: 'secondary' })}>Main</a>
 				<Badge variant="outline">...</Badge>
 			</div>
-			<div class={['min-h-20']}>Tasks...</div>
+			<div class={['mt-2 min-h-20 px-4']}>Tasks...</div>
 		</div>
 	{/if}
 </main>
