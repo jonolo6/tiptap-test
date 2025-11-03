@@ -55,6 +55,11 @@ const headings = [
 		level: 2,
 		toggle: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 2 }).run(),
 	},
+	{
+		key: 'heading3',
+		level: 3,
+		toggle: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+	},
 ];
 
 export const DEFAULT_VALUE = 'none';

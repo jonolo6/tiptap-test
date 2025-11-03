@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { ChevronDown, Heading1Icon, Heading2Icon, HeadingIcon } from '@lucide/svelte/icons';
+	import {
+		ChevronDown,
+		Heading1Icon,
+		Heading2Icon,
+		Heading3Icon,
+		HeadingIcon,
+	} from '@lucide/svelte/icons';
 
 	import * as Menubar from '$lib/components/ui/menubar/index.js';
 	import type { TiptapViewModel } from './TipTapViewModel.svelte';
@@ -15,13 +21,18 @@
 		{
 			value: 'heading1',
 			label: 'Heading One',
-			Icon: Heading1Icon
+			Icon: Heading1Icon,
 		},
 		{
 			value: 'heading2',
 			label: 'Heading Two',
-			Icon: Heading2Icon
-		}
+			Icon: Heading2Icon,
+		},
+		{
+			value: 'heading3',
+			label: 'Heading Three',
+			Icon: Heading3Icon,
+		},
 	];
 
 	let type = $derived<Type>(model.heading as Type);
@@ -38,7 +49,7 @@
 		{:else}
 			<TriggerContent class={'size-4.5 '} />
 		{/if}
-		<ChevronDown class={['ml-0.5 size-2.5 text-muted-foreground']} />
+		<ChevronDown class={['ml-1 size-2.5 text-muted-foreground']} />
 	</Menubar.Trigger>
 	<Menubar.Content>
 		{#each headingOptions as option (option.value)}

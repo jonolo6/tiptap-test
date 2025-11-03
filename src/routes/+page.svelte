@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import Tiptap from '$lib/components/tiptap-menu/Tiptap.svelte';
-	import { Badge } from '$lib/components/ui/badge';
+	import { Badge, badgeVariants } from '$lib/components/ui/badge';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
 
@@ -28,23 +28,24 @@
 		<div
 			class={[
 				'grid h-full grid-cols-1 grid-rows-[auto_auto_auto_auto_minmax(40px,1fr)_auto_minmax(40px,1fr)] gap-y-1.5',
-				false && 'border border-green-500'
+				false && 'border border-green-500',
 			]}
 		>
 			<div class="mt-2 text-lg font-semibold">Heading...</div>
 			<div class="text-sm">Properties</div>
 			<!-- <Separator /> -->
-			<div class={['relative', false && 'my-2 border border-red-500']}>
+			<div class={['relative', false && 'mb-4 border border-red-500']}>
 				<Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}>
 					<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} />
 				</Toggle>
 				{#if !hideNotes}
-					<!-- <span class="text-sm text-gray-500"> Notes </span> -->
 					<Tiptap {content} onUpdate={(m) => saveContent(m.editor.getJSON())} />
 				{/if}
 			</div>
-			<div>
-				<Badge variant="secondary">all</Badge>
+			<div class="mb-4">
+				<Badge>All</Badge>
+				<a href="/dashboard" class={badgeVariants({ variant: 'secondary' })}>Main</a>
+				<Badge variant="outline">...</Badge>
 			</div>
 			<div class={['min-h-20']}>Tasks...</div>
 		</div>

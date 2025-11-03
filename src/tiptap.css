@@ -81,15 +81,19 @@
 	}
 
 	h1 {
-		font-size: 1.3rem;
+		/* font-size: 1.3rem; */
+		@apply text-3xl font-bold;
+		/* @apply border-b border-gray-200 pb-1.5 dark:border-gray-700; */
 	}
 
 	h2 {
-		font-size: 1.2rem;
+		/* font-size: 1.2rem; */
+		@apply text-2xl;
 	}
 
 	h3 {
-		font-size: 1.1rem;
+		/* font-size: 1.1rem; */
+		@apply text-xl;
 	}
 
 	h4,
