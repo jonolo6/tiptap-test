@@ -1,41 +1,18 @@
 <script lang="ts">
 	// BubbleMenu.svelte — Svelte 5 rune variant
+	import { BoldIcon, ItalicIcon, StrikethroughIcon } from '@lucide/svelte';
 	import type { Editor } from '@tiptap/core';
-	import type { PluginKey } from '@tiptap/pm/state';
-	import type { Props as TippyProps } from 'tippy.js';
 	import { BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
-	import { onMount, untrack, type Snippet } from 'svelte';
+	import type { PluginKey } from '@tiptap/pm/state';
+	import { onMount, type Component } from 'svelte';
 	import type { ClassValue } from 'svelte/elements';
 
-	/**
-	 * Props (Svelte 5 runes)
-	 * - editor: required tiptap Editor
-	 * - pluginKey: string | PluginKey (default 'bubbleMenu')
-	 * - shouldShow: predicate to control visibility (optional)
-	 * - tippyOptions: forwarded to tippy instance (optional)
-	 * - updateDelay: debounce for selection updates (optional; ms)
-	 * - class / style: forwarded to the wrapper element
-	 */
-	const {
-		editor,
-		pluginKey = 'bubbleMenu',
-		shouldShow = null as
-			| ((args: {
-					editor: Editor;
-					view: any;
-					state: any;
-					oldState?: any;
-					from: number;
-					to: number;
-			  }) => boolean)
-			| null,
-		tippyOptions = {} as Partial<TippyProps>,
-		updateDelay = 0,
-		class: className = '',
-		style = '',
-		children,
-	} = $props<{
-		editor: Editor | undefined;
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
+	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
+	import { FORMAT_STATES, type TiptapViewModel } from './TipTapViewModel.svelte';
+
+	type Props = {
+		model: TiptapViewModel;
 		pluginKey?: string | PluginKey;
 		shouldShow?: (args: {
 			editor: Editor;
@@ -45,87 +22,145 @@
 			from: number;
 			to: number;
 		}) => boolean;
-		tippyOptions?: Partial<TippyProps>;
+		// tippyOptions?: Partial<TippyProps>;
 		updateDelay?: number;
 		class?: ClassValue;
 		style?: string;
-		children?: Snippet;
-	}>();
+		// children?: Snippet;
+	};
 
-	// The DOM element the plugin uses for the menu content
+	let {
+		model,
+		pluginKey = 'bubbleMenu',
+		shouldShow,
+		// tippyOptions = {} as Partial<TippyProps>,
+		updateDelay = 0,
+		class: className = '',
+		style = '',
+		// children,
+	}: Props = $props();
+
+	const editor = $derived(model.editor);
+
 	let root = $state<HTMLDivElement | null>(null);
-
-	// Track which editor instance currently owns our plugin,
-	// so we can safely unregister if editor prop changes.
 	let registeredWith: Editor | null = null;
 
-	const ready = $derived(Boolean(editor && root));
+	onMount(() => {
+		if (registeredWith && registeredWith !== editor) {
+			try {
+				registeredWith.unregisterPlugin(pluginKey as any);
+			} catch {
+				/* no-op */
+			}
+			registeredWith = null;
+		}
 
-	// (Re)register the PM plugin whenever editor/root or inputs change
-	$effect(() => {
-		if (!ready) return;
-		console.log('tracking!', { ready });
+		editor.registerPlugin(
+			BubbleMenuPlugin({
+				pluginKey: pluginKey as any,
+				editor,
+				element: root as HTMLElement,
+				// tippyOptions,
+				updateDelay,
+				shouldShow: shouldShow ?? undefined,
+			})
+		);
+		registeredWith = editor;
 
-		untrack(() => {
-			console.log('1...');
-			if (registeredWith && registeredWith !== editor) {
-				try {
-					registeredWith.unregisterPlugin(pluginKey as any);
-				} catch {
-					/* no-op */
-				}
+		return () => {
+			try {
+				editor.unregisterPlugin(pluginKey as any);
+			} catch {
+				/* no-op */
+			}
+			if (registeredWith === editor) {
 				registeredWith = null;
 			}
-
-			console.log('registering!');
-			// Register on current editor
-			editor.registerPlugin(
-				BubbleMenuPlugin({
-					pluginKey: pluginKey as any,
-					editor,
-					element: root as HTMLElement,
-					// tippyOptions,
-					updateDelay,
-					shouldShow: shouldShow ?? undefined,
-				})
-			);
-			registeredWith = editor;
-
-			// Cleanup when any dependency changes / component unmounts
-			return () => {
-				console.log('cleanup!');
-				try {
-					editor.unregisterPlugin(pluginKey as any);
-				} catch {
-					/* no-op */
-				}
-				if (registeredWith === editor) {
-					registeredWith = null;
-				}
-			};
-		});
+		};
 	});
+
+	// const values = $derived(
+	// 	Object.entries(model.active)
+	// 		.filter(([_, value]) => value)
+	// 		.map(([key]) => key)
+	// );
+	// function setValues(newValues: string[]) {
+	// 	console.log({ newValues });
+	//
+	// 	const toSet = newValues.filter((newVal) => !values.includes(newVal));
+	// 	const toUnset = values.filter((oldVal) => !newValues.includes(oldVal));
+	// 	toSet.forEach((val) => {
+	// 		FORMAT_STATES.find(({ key }) => val === key)!.toggle(editor);
+	// 	});
+	// 	toUnset.forEach((val) => {
+	// 		FORMAT_STATES.find(({ key }) => val === key)!.toggle(editor);
+	// 	});
+	// }
 </script>
 
-<!--
-  We render the menu DOM in-place. The BubbleMenuPlugin detaches this element
-  (moves it under tippy) but we keep it as the source of truth for slotted content.
--->
+{#snippet FormatToggle({
+	Icon,
+	format,
+	toggle,
+}: {
+	Icon: Component;
+	format: string;
+	toggle: () => void;
+})}
+	<Toggle
+		size="sm"
+		variant="default"
+		class="p-0"
+		bind:pressed={() => model.active[format] ?? false, () => toggle()}
+	>
+		<Icon class="size-3.5" />
+	</Toggle>
+{/snippet}
+
 {#if editor != null}
 	<div
 		bind:this={root}
-		class={[className]}
+		class={['flex rounded-lg bg-slate-900 text-sm shadow', true && 'p-1', className]}
 		{style}
 		style:visibility="hidden"
 		style:position="absolute"
 		style:top="0"
 		style:left="0"
 	>
-		<button onclick={() => editor.chain().focus().toggleBold().run()}> bold </button>
-		<button onclick={() => editor.chain().focus().toggleItalic().run()}> italic </button>
+		<!-- <ToggleGroup.Root variant="outline" type="multiple" bind:value={() => values, setValues}> -->
+		<!-- 	<ToggleGroup.Item value="bold" aria-label="Toggle Bold"> -->
+		<!-- 		<BoldIcon class="size-3.5" /> -->
+		<!-- 	</ToggleGroup.Item> -->
+		<!-- 	<ToggleGroup.Item value="italic" aria-label="Toggle Italic"> -->
+		<!-- 		<ItalicIcon class="size-3.5" /> -->
+		<!-- 	</ToggleGroup.Item> -->
+		<!-- 	<ToggleGroup.Item value="strike" aria-label="Toggle Strike"> -->
+		<!-- 		<StrikethroughIcon class="size-3.5" /> -->
+		<!-- 	</ToggleGroup.Item> -->
+		<!-- </ToggleGroup.Root> -->
+		<!---->
+		{@render FormatToggle({
+			Icon: BoldIcon,
+			format: 'bold',
+			toggle: () => editor.chain().focus().toggleBold().run(),
+		})}
+		{@render FormatToggle({
+			Icon: ItalicIcon,
+			format: 'italic',
+			toggle: () => editor.chain().focus().toggleItalic().run(),
+		})}
+		{@render FormatToggle({
+			Icon: StrikethroughIcon,
+			format: 'strike',
+			toggle: () => editor.chain().focus().toggleStrike().run(),
+		})}
 	</div>
 {/if}
 
 <style>
-	/* You control visuals. Hidden until the plugin attaches it to tippy. */
+	@reference "tailwindcss";
+
+	.selected {
+		@apply text-purple-500;
+	}
 </style>

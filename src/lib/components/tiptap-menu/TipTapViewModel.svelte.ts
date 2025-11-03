@@ -30,7 +30,20 @@ const lists = [
 		toggle: (editor: Editor) => editor.chain().focus().toggleTaskList().run(),
 	},
 ];
-const active_states = ['bold', 'italic', 'strike'];
+export const FORMAT_STATES = [
+	{
+		key: 'bold',
+		toggle: (editor: Editor) => editor.chain().focus().toggleBold().run(),
+	},
+	{
+		key: 'italic',
+		toggle: (editor: Editor) => editor.chain().focus().toggleItalic().run(),
+	},
+	{
+		key: 'strike',
+		toggle: (editor: Editor) => editor.chain().focus().toggleStrike().run(),
+	},
+];
 const headings = [
 	{
 		key: 'heading1',
@@ -104,8 +117,8 @@ export class TiptapViewModel {
 	}
 
 	#updateInternalState() {
-		active_states.forEach((state) => {
-			this.active[state] = this.editor.isActive(state);
+		FORMAT_STATES.forEach(({ key }) => {
+			this.active[key] = this.editor.isActive(key);
 		});
 		this.list = DEFAULT_VALUE;
 		lists.forEach(({ key }) => {

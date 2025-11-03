@@ -33,8 +33,8 @@
 		};
 	});
 
-	let outputHTML = $state('');
-	const editor = $derived(model?.editor);
+	// let outputHTML = $state('');
+	// const editor = $derived(model?.editor);
 </script>
 
 <!-- <Item.Root variant="muted"> -->
@@ -51,13 +51,12 @@
 <!-- 	</Item.Actions> -->
 <!-- </Item.Root> -->
 
-<!-- {#if editor != null} -->
-<BubbleMenuCgpt
-	{editor}
-	class="rounded-xl border bg-white p-2 shadow"
-	shouldShow={({ editor }) => editor.state.selection.from !== editor.state.selection.to}
-></BubbleMenuCgpt>
-<!-- {/if} -->
+{#if model != null}
+	<BubbleMenuCgpt
+		{model}
+		shouldShow={({ editor }) => editor.state.selection.from !== editor.state.selection.to}
+	/>
+{/if}
 <!-- </div> -->
 <div class={[classValue ?? '']}>
 	{#if model != null}
