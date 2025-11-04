@@ -75,7 +75,7 @@
 >
 	<Select.Trigger
 		class={[
-			'm-0 flex h-5.5 items-center gap-0 rounded-sm border-0 p-1',
+			'm-0 flex items-center gap-0 rounded-sm border-0 p-1',
 			!isDeselected ? 'text-purple-500' : '',
 		]}
 	>
@@ -115,9 +115,7 @@
 						]}
 					>
 						<heading.Icon class={[size, 'shrink-0 grow-0']} />
-						<span class="ml-1">
-							{heading.label}
-						</span>
+						<span class="ml-1">{heading.label}</span>
 					</Select.Item>
 				{/each}
 			</Select.Group>

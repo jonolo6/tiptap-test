@@ -7,9 +7,10 @@
 	import type { ClassValue } from 'svelte/elements';
 
 	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
-	import { type TiptapViewModel } from './TipTapViewModel.svelte';
-	import ListMenu from './ListMenu.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import HeadingSelect from './HeadingSelect.svelte';
 	import ListSelect from './ListSelect.svelte';
+	import { type TiptapViewModel } from './TipTapViewModel.svelte';
 
 	type Props = {
 		model: TiptapViewModel;
@@ -115,11 +116,10 @@
 	<Toggle
 		size="sm"
 		variant="default"
-		class={[classValue, 'p-0']}
 		bind:pressed={() => model.active[format] ?? false, () => toggle()}
 	>
 		{#snippet child({ pressed, props })}
-			<Icon {...props} class={['m-1 size-4', pressed && 'text-purple-500']} />
+			<Icon {...props} class={[classValue, 'm-1 size-4', pressed && 'text-purple-500']} />
 		{/snippet}
 	</Toggle>
 {/snippet}
@@ -128,8 +128,8 @@
 	<div
 		bind:this={root}
 		class={[
-			'flex items-center rounded-lg border-2 border-border text-sm shadow',
-			true && 'p-1',
+			`flex items-center rounded-lg border-2 border-border bg-background p-1 
+       text-sm shadow shadow-popover`,
 			className,
 		]}
 		{style}
@@ -138,22 +138,12 @@
 		style:top="0"
 		style:left="0"
 	>
-		<!-- <ToggleGroup.Root variant="outline" type="multiple" bind:value={() => values, setValues}> -->
-		<!-- 	<ToggleGroup.Item value="bold" aria-label="Toggle Bold"> -->
-		<!-- 		<BoldIcon class="size-3.5" /> -->
-		<!-- 	</ToggleGroup.Item> -->
-		<!-- 	<ToggleGroup.Item value="italic" aria-label="Toggle Italic"> -->
-		<!-- 		<ItalicIcon class="size-3.5" /> -->
-		<!-- 	</ToggleGroup.Item> -->
-		<!-- 	<ToggleGroup.Item value="strike" aria-label="Toggle Strike"> -->
-		<!-- 		<StrikethroughIcon class="size-3.5" /> -->
-		<!-- 	</ToggleGroup.Item> -->
-		<!-- </ToggleGroup.Root> -->
-		<!---->
+		<HeadingSelect {model} />
 		<ListSelect {model} />
 
+		<Separator orientation="vertical" class="mx-1.5 py-2.5" />
 		{@render FormatToggle({
-			class: 'ml-1',
+			// class: 'ml-4',
 			Icon: BoldIcon,
 			format: 'bold',
 			toggle: () => editor.chain().focus().toggleBold().run(),

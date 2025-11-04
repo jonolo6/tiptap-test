@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { Heading1Icon, Heading2Icon, HeadingIcon, ChevronDown } from '@lucide/svelte/icons';
-	import { Editor } from '@tiptap/core';
+	import { ChevronDown, Heading1Icon, Heading2Icon, HeadingIcon } from '@lucide/svelte/icons';
 	import { Select } from 'bits-ui';
-	import { onMount } from 'svelte';
+	import type { TiptapViewModel } from './TipTapViewModel.svelte';
 
 	type Type = 'none' | 'bullet' | 'ordered' | 'todos';
 	type Props = {
-		editor: Editor;
+		model: TiptapViewModel;
 	};
 
 	const options = [
@@ -15,61 +14,62 @@
 			label: 'Heading One',
 			Icon: Heading1Icon,
 			act: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-			isActive: () => editor.isActive('heading', { level: 1 })
+			isActive: () => editor.isActive('heading', { level: 1 }),
 		},
 		{
 			value: 'heading2',
 			label: 'Heading Two',
 			Icon: Heading2Icon,
 			act: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-			isActive: () => editor.isActive('heading', { level: 2 })
-		}
+			isActive: () => editor.isActive('heading', { level: 2 }),
+		},
 	];
 
-	let { editor }: Props = $props();
+	let { model }: Props = $props();
 
-	let type = $state<Type>('none');
+	const editor = $derived(model.editor);
+
 	let open = $state(false);
 
 	function setValue(newValue: string) {
 		console.log({ newValue });
 		switch (newValue) {
 			case undefined:
-			case null: {
-				editor.chain().focus().toggleBulletList().run();
-				break;
-			}
+			case null:
 			case '':
 				open = false;
-				editor.chain().focus().toggleBulletList().run();
-				editor.chain().focus().toggleBulletList().run();
+				editor.chain().focus().setParagraph().run();
 				break;
 			default:
-				options.find((v) => v.value === newValue)[0].act();
+				const option = options.find((v) => v.value === newValue);
+				if (option == null) throw new Error(`cannot handle '${newValue}'`);
+
+				option.act();
 		}
 	}
 
-	const isDeselected = $derived(type == 'none');
-	const TriggerContent = $derived(options.find((f) => f.value === type)?.Icon);
+	const isDeselected = $derived(model.heading == 'none');
+	const TriggerContent = $derived(options.find((f) => f.value === model.heading)?.Icon);
+	const size = 'size-4';
 </script>
 
 <Select.Root
 	type="single"
 	name="paragraph"
 	bind:open={() => open, (_open) => (open = _open)}
-	bind:value={() => type, setValue}
+	bind:value={() => model.heading, setValue}
 	allowDeselect
 >
 	<Select.Trigger
 		class={[
-			'm-0 flex h-5.5 items-center gap-0 rounded-sm border-0 p-1',
-			!isDeselected ? 'text-purple-500' : 'text-slate-500'
+			'm-0 flex items-center gap-0 rounded-sm border-0 p-1',
+			!isDeselected ? 'text-purple-500' : '',
 		]}
 	>
 		{#if isDeselected}
-			<HeadingIcon class="size-4.5" />
+			<HeadingIcon class={[size]} />
 		{:else}
-			<TriggerContent class={'size-4.5 '} />
+			<TriggerContent class={[size]} />
 		{/if}
 		<ChevronDown class={['ml-0.5 size-2.5']} />
 	</Select.Trigger>
@@ -98,10 +98,10 @@
                data-disabled:opacity-50 data-highlighted:bg-muted
                dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
                `,
-							type === heading.value ? 'is-active' : ''
+							model.heading === heading.value ? 'is-active' : '',
 						]}
 					>
-						<heading.Icon class="size-5 shrink-0 grow-0" />
+						<heading.Icon class={[size, 'shrink-0 grow-0']} />
 						<span class="ml-1">{heading.label}</span>
 					</Select.Item>
 				{/each}
