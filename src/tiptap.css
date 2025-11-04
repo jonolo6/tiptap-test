@@ -2,6 +2,7 @@
 	@reference 'tailwindcss';
 
 	outline: none;
+	@apply text-sm;
 
 	:first-child {
 		margin-top: 0;
@@ -61,6 +62,10 @@
 		color: oklch(55.4% 0.046 257.417);
 	}
 
+	p {
+		@apply mb-1.5;
+	}
+
 	/* Heading styles */
 	h1,
 	h2,
@@ -70,30 +75,32 @@
 	h6 {
 		@apply font-semibold;
 		line-height: 1;
-		margin-top: 2rem;
+		/* margin-top: 2rem; */
+		@apply mt-6 mb-1.5;
 		text-wrap: pretty;
 	}
 
 	h1,
 	h2 {
-		margin-top: 3.5rem;
-		margin-bottom: 1.5rem;
+		@apply mt-8 mb-3;
+		/* margin-top: 3.5rem; */
+		/* margin-bottom: 1.5rem; */
 	}
 
 	h1 {
 		/* font-size: 1.3rem; */
-		@apply text-3xl font-bold;
+		@apply text-2xl font-bold;
 		/* @apply border-b border-gray-200 pb-1.5 dark:border-gray-700; */
 	}
 
 	h2 {
 		/* font-size: 1.2rem; */
-		@apply text-2xl;
+		@apply text-xl;
 	}
 
 	h3 {
 		/* font-size: 1.1rem; */
-		@apply text-xl;
+		@apply text-lg;
 	}
 
 	h4,
