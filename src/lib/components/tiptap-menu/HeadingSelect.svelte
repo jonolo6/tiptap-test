@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { ChevronDown, Heading1Icon, Heading2Icon, HeadingIcon } from '@lucide/svelte/icons';
+	import {
+		ChevronDown,
+		Heading1Icon,
+		Heading2Icon,
+		Heading3Icon,
+		HeadingIcon,
+	} from '@lucide/svelte/icons';
 	import { Select } from 'bits-ui';
 	import type { TiptapViewModel } from './TipTapViewModel.svelte';
 
@@ -22,6 +28,13 @@
 			Icon: Heading2Icon,
 			act: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
 			isActive: () => editor.isActive('heading', { level: 2 }),
+		},
+		{
+			value: 'heading3',
+			label: 'Heading Three',
+			Icon: Heading3Icon,
+			act: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+			isActive: () => editor.isActive('heading', { level: 3 }),
 		},
 	];
 
