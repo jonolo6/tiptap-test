@@ -3,15 +3,10 @@
 	import List from '@lucide/svelte/icons/list';
 	import ListOrdered from '@lucide/svelte/icons/list-ordered';
 	import ListTodo from '@lucide/svelte/icons/list-todo';
-	import { Editor } from '@tiptap/core';
 	import { Select } from 'bits-ui';
 
-	import type { TiptapViewModel } from './TipTapViewModel.svelte';
 	import type { BubbleMenuModel } from './BubbleMenuModel.svelte';
-	// import { OpenDebouncer } from './OpenDebouncer.svelte';
-	// import type { BubbleMenuModel } from './BubbleMenuModel.svelte';
 
-	type Type = 'none' | 'bulletList' | 'orderedList' | 'todosList';
 	type Props = {
 		model: BubbleMenuModel;
 	};
@@ -47,7 +42,6 @@
 	const isDeselected = $derived(model.list == 'none' || model.list == null);
 	const TriggerContent = $derived(options.find((f) => f.value === model.list)?.Icon ?? List);
 	const size = 'size-4';
-	// const openState = new OpenDebouncer();
 
 	function setValue(newValue: string) {
 		console.log({ newValue });
@@ -115,7 +109,8 @@
 							`flex items-center gap-1.5 rounded-sm 
                px-2 py-0.5 text-sm capitalize outline-hidden select-none 
                data-disabled:opacity-50 data-highlighted:bg-muted
-               data-selected:text-purple-500 dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
+               data-selected:text-purple-500 dark:data-selected:text-purple-400 
+               dark:data-[selected]:bg-secondary
                `,
 							model.list === heading.value ? 'is-active' : '',
 						]}

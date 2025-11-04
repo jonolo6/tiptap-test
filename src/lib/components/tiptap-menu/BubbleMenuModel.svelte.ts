@@ -1,5 +1,4 @@
 import type { TiptapViewModel } from './TipTapViewModel.svelte';
-import { OpenDebouncer } from './OpenDebouncer.svelte';
 
 export class BubbleMenuModel {
 	#model = $state() as TiptapViewModel;

@@ -7,11 +7,9 @@
 		HeadingIcon,
 	} from '@lucide/svelte/icons';
 	import { Select } from 'bits-ui';
-	import type { TiptapViewModel } from './TipTapViewModel.svelte';
-	// import { OpenDebouncer } from './OpenDebouncer.svelte';
+
 	import type { BubbleMenuModel } from './BubbleMenuModel.svelte';
 
-	type Type = 'none' | 'bullet' | 'ordered' | 'todos';
 	type Props = {
 		model: BubbleMenuModel;
 	};
@@ -53,7 +51,6 @@
 			case undefined:
 			case null:
 			case '':
-				// model.openDropdown = null;
 				editor.chain().focus().setParagraph().run();
 				break;
 			default:
@@ -114,7 +111,8 @@
 							`flex items-center gap-1.5 rounded-sm 
                px-2 py-0.5 text-sm capitalize outline-hidden select-none 
                data-disabled:opacity-50 data-highlighted:bg-muted
-               dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
+               data-selected:text-purple-500 dark:data-selected:text-purple-400 
+               dark:data-[selected]:bg-secondary
                `,
 							model.heading === heading.value ? 'is-active' : '',
 						]}
