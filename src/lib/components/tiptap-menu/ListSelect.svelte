@@ -22,22 +22,22 @@
 			label: 'Bullet List',
 			toggle: () => editor.chain().focus().toggleBulletList().run(),
 			Icon: List,
-			isActive: () => editor.isActive('bulletList')
+			isActive: () => editor.isActive('bulletList'),
 		},
 		{
 			value: 'orderedList',
 			label: 'Ordered List',
 			toggle: () => editor.chain().focus().toggleOrderedList().run(),
 			Icon: ListOrdered,
-			isActive: () => editor.isActive('orderedList')
+			isActive: () => editor.isActive('orderedList'),
 		},
 		{
-			value: 'todosList',
+			value: 'taskList',
 			label: 'Todo List',
 			toggle: () => editor.chain().focus().toggleTaskList().run(),
 			Icon: ListTodo,
-			isActive: () => editor.isActive('todosList')
-		}
+			isActive: () => editor.isActive('taskList'),
+		},
 	];
 
 	let open = $state(false);
@@ -47,32 +47,23 @@
 		switch (newValue) {
 			case undefined:
 			case 'none':
-			case null: {
-				editor.chain().focus().toggleBulletList().run();
-				break;
-			}
-			case '':
+			case null:
+			case '': {
 				open = false;
-				editor.chain().focus().toggleBulletList().run();
-				editor.chain().focus().toggleBulletList().run();
-				break;
-			case 'bulletList': {
+				editor.chain().focus().setParagraph().run();
 				break;
 			}
-			case 'todosList': {
-				break;
+			default: {
+				const value = options.find(({ value }) => value === newValue);
+				if (!value) throw new Error(`cannot handle '${newValue}'`);
+				value.toggle();
 			}
-			case 'orderedList': {
-				options.find(({ value }) => value === newValue)?.toggle();
-				break;
-			}
-			default:
-				throw new Error(`cannot handle '${newValue}'`);
 		}
 	}
 
 	const isDeselected = $derived(model.list == 'none' || model.list == null);
 	const TriggerContent = $derived(options.find((f) => f.value === model.list)?.Icon ?? List);
+	const size = 'size-4';
 </script>
 
 <Select.Root
@@ -85,13 +76,13 @@
 	<Select.Trigger
 		class={[
 			'm-0 flex h-5.5 items-center gap-0 rounded-sm border-0 p-1',
-			!isDeselected ? 'text-purple-500' : ''
+			!isDeselected ? 'text-purple-500' : '',
 		]}
 	>
 		{#if isDeselected}
-			<List class={[' size-4.5']} />
+			<List class={[size]} />
 		{:else}
-			<TriggerContent class={['size-4.5 ']} />
+			<TriggerContent class={[size]} />
 		{/if}
 		<ChevronDown class={['ml-0.5 size-2.5']} />
 	</Select.Trigger>
@@ -120,10 +111,10 @@
                data-disabled:opacity-50 data-highlighted:bg-muted
                dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
                `,
-							model.list === heading.value ? 'is-active' : ''
+							model.list === heading.value ? 'is-active' : '',
 						]}
 					>
-						<heading.Icon class="size-4.5 shrink-0 grow-0" />
+						<heading.Icon class={[size, 'shrink-0 grow-0']} />
 						<span class="ml-1">
 							{heading.label}
 						</span>

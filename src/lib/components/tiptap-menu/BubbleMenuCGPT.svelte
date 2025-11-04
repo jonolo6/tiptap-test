@@ -1,5 +1,4 @@
 <script lang="ts">
-	// BubbleMenu.svelte — Svelte 5 rune variant
 	import { BoldIcon, ItalicIcon, StrikethroughIcon } from '@lucide/svelte';
 	import type { Editor } from '@tiptap/core';
 	import { BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
@@ -7,9 +6,10 @@
 	import { onMount, type Component } from 'svelte';
 	import type { ClassValue } from 'svelte/elements';
 
-	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
-	import { FORMAT_STATES, type TiptapViewModel } from './TipTapViewModel.svelte';
+	import { type TiptapViewModel } from './TipTapViewModel.svelte';
+	import ListMenu from './ListMenu.svelte';
+	import ListSelect from './ListSelect.svelte';
 
 	type Props = {
 		model: TiptapViewModel;
@@ -61,8 +61,11 @@
 				editor,
 				element: root as HTMLElement,
 				// tippyOptions,
+				// options: {
+				// 	autoPlacement: { alignment: 'start' },
+				// },
 				updateDelay,
-				shouldShow: shouldShow ?? undefined,
+				shouldShow,
 			})
 		);
 		registeredWith = editor;
@@ -100,9 +103,11 @@
 
 {#snippet FormatToggle({
 	Icon,
+	class: classValue,
 	format,
 	toggle,
 }: {
+	class?: ClassValue;
 	Icon: Component;
 	format: string;
 	toggle: () => void;
@@ -110,17 +115,23 @@
 	<Toggle
 		size="sm"
 		variant="default"
-		class="p-0"
+		class={[classValue, 'p-0']}
 		bind:pressed={() => model.active[format] ?? false, () => toggle()}
 	>
-		<Icon class="size-3.5" />
+		{#snippet child({ pressed, props })}
+			<Icon {...props} class={['m-1 size-4', pressed && 'text-purple-500']} />
+		{/snippet}
 	</Toggle>
 {/snippet}
 
 {#if editor != null}
 	<div
 		bind:this={root}
-		class={['flex rounded-lg bg-muted text-sm shadow', true && 'p-1', className]}
+		class={[
+			'flex items-center rounded-lg border-2 border-border text-sm shadow',
+			true && 'p-1',
+			className,
+		]}
 		{style}
 		style:visibility="hidden"
 		style:position="absolute"
@@ -139,7 +150,10 @@
 		<!-- 	</ToggleGroup.Item> -->
 		<!-- </ToggleGroup.Root> -->
 		<!---->
+		<ListSelect {model} />
+
 		{@render FormatToggle({
+			class: 'ml-1',
 			Icon: BoldIcon,
 			format: 'bold',
 			toggle: () => editor.chain().focus().toggleBold().run(),

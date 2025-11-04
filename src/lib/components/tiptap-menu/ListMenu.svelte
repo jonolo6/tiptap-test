@@ -15,18 +15,18 @@
 		{
 			value: 'bulletList',
 			label: 'Bullet List',
-			Icon: ListIcon
+			Icon: ListIcon,
 		},
 		{
 			value: 'orderedList',
 			label: 'Ordered List',
-			Icon: ListOrderedIcon
+			Icon: ListOrderedIcon,
 		},
 		{
 			value: 'taskList',
 			label: 'Todo List',
-			Icon: ListTodoIcon
-		}
+			Icon: ListTodoIcon,
+		},
 	];
 
 	let type = $derived<Type>(model.list as Type);
