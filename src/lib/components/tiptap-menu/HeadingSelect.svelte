@@ -76,7 +76,7 @@
 	<Select.Trigger
 		class={[
 			'm-0 flex items-center gap-0 rounded-sm border-0 p-1',
-			!isDeselected ? 'text-purple-500' : '',
+			!isDeselected ? 'text-purple-500 dark:text-purple-400' : '',
 		]}
 	>
 		{#if isDeselected}

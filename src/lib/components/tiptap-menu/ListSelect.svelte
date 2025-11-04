@@ -76,7 +76,7 @@
 	<Select.Trigger
 		class={[
 			'm-0 flex items-center gap-0 rounded-sm border-0 p-1',
-			!isDeselected ? 'text-purple-500' : '',
+			!isDeselected ? 'text-purple-500 dark:text-purple-400' : '',
 		]}
 	>
 		{#if isDeselected}
@@ -109,7 +109,7 @@
 							`flex items-center gap-1.5 rounded-sm 
                px-2 py-0.5 text-sm capitalize outline-hidden select-none 
                data-disabled:opacity-50 data-highlighted:bg-muted
-               dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
+               data-selected:text-purple-500 dark:data-selected:text-purple-400 dark:data-[selected]:bg-secondary
                `,
 							model.list === heading.value ? 'is-active' : '',
 						]}
