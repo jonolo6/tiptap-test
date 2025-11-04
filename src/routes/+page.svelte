@@ -33,7 +33,10 @@
 		>
 			<div class="px-4 text-2xl font-bold">Heading...</div>
 			<div class="mt-2 px-4 text-sm">
-				<Badge variant="secondary" class="bg-blue-500 shadow dark:bg-blue-700 dark:text-blue-200">
+				<Badge
+					variant="secondary"
+					class="rounded- bg-fuchsia-200 px-1.5 py-[1px] text-fuchsia-950 shadow dark:bg-fuchsia-600 dark:text-fuchsia-100"
+				>
 					Project
 				</Badge>
 			</div>

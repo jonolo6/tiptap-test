@@ -11,6 +11,7 @@
 	import HeadingSelect from './HeadingSelect.svelte';
 	import ListSelect from './ListSelect.svelte';
 	import { type TiptapViewModel } from './TipTapViewModel.svelte';
+	import { BubbleMenuModel } from './BubbleMenuModel.svelte';
 
 	type Props = {
 		model: TiptapViewModel;
@@ -28,14 +29,15 @@
 	};
 
 	let {
-		model,
+		model: tiptapModel,
 		pluginKey = 'bubbleMenu',
 		shouldShow,
 		updateDelay = 0,
 		class: className = '',
 	}: Props = $props();
 
-	const editor = $derived(model.editor);
+	const editor = $derived(tiptapModel.editor);
+	const model = new BubbleMenuModel(tiptapModel);
 
 	let element = $state<HTMLDivElement>();
 	let registeredWith: Editor | null = null;
@@ -96,7 +98,7 @@
 	format: string;
 	toggle: () => void;
 })}
-	<Toggle bind:pressed={() => model.active[format] ?? false, () => toggle()}>
+	<Toggle bind:pressed={() => tiptapModel.active[format] ?? false, () => toggle()}>
 		{#snippet child({ pressed, props })}
 			<div class={['my-0.5 flex size-6 items-center justify-center rounded p-1 hover:bg-muted']}>
 				<Icon

@@ -8,11 +8,12 @@
 	} from '@lucide/svelte/icons';
 	import { Select } from 'bits-ui';
 	import type { TiptapViewModel } from './TipTapViewModel.svelte';
-	import { OpenDebouncer } from './OpenDebouncer.svelte';
+	// import { OpenDebouncer } from './OpenDebouncer.svelte';
+	import type { BubbleMenuModel } from './BubbleMenuModel.svelte';
 
 	type Type = 'none' | 'bullet' | 'ordered' | 'todos';
 	type Props = {
-		model: TiptapViewModel;
+		model: BubbleMenuModel;
 	};
 
 	const options = [
@@ -46,15 +47,13 @@
 	const TriggerContent = $derived(options.find((f) => f.value === model.heading)?.Icon);
 	const size = 'size-4';
 
-	const openState = new OpenDebouncer();
-
 	function setValue(newValue: string) {
 		console.log({ newValue });
 		switch (newValue) {
 			case undefined:
 			case null:
 			case '':
-				openState.open = false;
+				// model.openDropdown = null;
 				editor.chain().focus().setParagraph().run();
 				break;
 			default:
@@ -69,7 +68,9 @@
 <Select.Root
 	type="single"
 	name="paragraph"
-	bind:open={() => openState.open, (_open) => (openState.open = _open)}
+	bind:open={
+		() => model.openDropdown === 'heading', (open) => (model.openDropdown = open ? 'heading' : null)
+	}
 	bind:value={() => model.heading, setValue}
 	allowDeselect
 >
@@ -78,8 +79,8 @@
 			'm-0 flex items-center gap-0 rounded-sm border-0 p-1 hover:bg-muted',
 			!isDeselected ? 'text-purple-500 dark:text-purple-400' : '',
 		]}
-		onmouseenter={() => openState.doOpen()}
-		onmouseleave={() => openState.doClose()}
+		onmouseenter={() => (model.openDropdown = 'heading')}
+		onmouseleave={() => (model.openDropdown = null)}
 	>
 		{#if isDeselected}
 			<HeadingIcon class={[size]} />
@@ -101,8 +102,8 @@
       data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in 
       data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 dark:bg-slate-900`}
 			align="start"
-			onmouseenter={() => openState.doOpen()}
-			onmouseleave={() => openState.doClose()}
+			onmouseenter={() => (model.openDropdown = 'heading')}
+			onmouseleave={() => (model.openDropdown = null)}
 		>
 			<Select.Group>
 				{#each options as heading (heading.value)}
