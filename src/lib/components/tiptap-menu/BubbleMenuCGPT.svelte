@@ -6,8 +6,8 @@
 	import { onMount, type Component } from 'svelte';
 	import type { ClassValue } from 'svelte/elements';
 
-	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
 	import HeadingSelect from './HeadingSelect.svelte';
 	import ListSelect from './ListSelect.svelte';
 	import { type TiptapViewModel } from './TipTapViewModel.svelte';
@@ -23,22 +23,16 @@
 			from: number;
 			to: number;
 		}) => boolean;
-		// tippyOptions?: Partial<TippyProps>;
 		updateDelay?: number;
 		class?: ClassValue;
-		// style?: string;
-		// children?: Snippet;
 	};
 
 	let {
 		model,
 		pluginKey = 'bubbleMenu',
 		shouldShow,
-		// tippyOptions = {} as Partial<TippyProps>,
 		updateDelay = 0,
 		class: className = '',
-		// style = '',
-		// children,
 	}: Props = $props();
 
 	const editor = $derived(model.editor);
