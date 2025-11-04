@@ -96,13 +96,14 @@
 	format: string;
 	toggle: () => void;
 })}
-	<Toggle
-		size="sm"
-		variant="default"
-		bind:pressed={() => model.active[format] ?? false, () => toggle()}
-	>
+	<Toggle bind:pressed={() => model.active[format] ?? false, () => toggle()}>
 		{#snippet child({ pressed, props })}
-			<Icon {...props} class={[classValue, 'm-1 size-4', pressed && 'text-purple-500']} />
+			<div class={['my-0.5 flex size-6 items-center justify-center rounded p-1 hover:bg-muted']}>
+				<Icon
+					{...props}
+					class={[classValue, 'size-4 shrink-0 grow-0', pressed && 'text-purple-500']}
+				/>
+			</div>
 		{/snippet}
 	</Toggle>
 {/snippet}
@@ -110,7 +111,7 @@
 <div
 	bind:this={element}
 	class={[
-		`flex items-center rounded-lg border-2 border-border bg-background p-1 
+		`flex items-center rounded-lg border-2 border-border bg-background px-1 
        text-sm shadow shadow-popover`,
 		className,
 	]}

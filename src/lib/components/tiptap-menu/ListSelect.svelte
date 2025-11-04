@@ -7,6 +7,7 @@
 	import { Select } from 'bits-ui';
 
 	import type { TiptapViewModel } from './TipTapViewModel.svelte';
+	import { OpenDebouncer } from './OpenDebouncer.svelte';
 
 	type Type = 'none' | 'bulletList' | 'orderedList' | 'todosList';
 	type Props = {
@@ -40,7 +41,10 @@
 		},
 	];
 
-	let open = $state(false);
+	const isDeselected = $derived(model.list == 'none' || model.list == null);
+	const TriggerContent = $derived(options.find((f) => f.value === model.list)?.Icon ?? List);
+	const size = 'size-4';
+	const openState = new OpenDebouncer();
 
 	function setValue(newValue: string) {
 		console.log({ newValue });
@@ -49,7 +53,7 @@
 			case 'none':
 			case null:
 			case '': {
-				open = false;
+				openState.open = false;
 				editor.chain().focus().setParagraph().run();
 				break;
 			}
@@ -60,24 +64,22 @@
 			}
 		}
 	}
-
-	const isDeselected = $derived(model.list == 'none' || model.list == null);
-	const TriggerContent = $derived(options.find((f) => f.value === model.list)?.Icon ?? List);
-	const size = 'size-4';
 </script>
 
 <Select.Root
 	type="single"
 	name="paragraph"
-	bind:open={() => open, (_open) => (open = _open)}
+	bind:open={() => openState.open, (open) => (openState.open = open)}
 	bind:value={() => model.list, setValue}
 	allowDeselect
 >
 	<Select.Trigger
 		class={[
-			'm-0 flex items-center gap-0 rounded-sm border-0 p-1',
+			'm-0 flex items-center gap-0 rounded-sm border-0 p-1 hover:bg-muted',
 			!isDeselected ? 'text-purple-500 dark:text-purple-400' : '',
 		]}
+		onmouseenter={() => openState.doOpen()}
+		onmouseleave={() => openState.doClose()}
 	>
 		{#if isDeselected}
 			<List class={[size]} />
@@ -99,6 +101,8 @@
       data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in 
       data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 dark:bg-slate-900`}
 			align="start"
+			onmouseenter={() => openState.doOpen()}
+			onmouseleave={() => openState.doClose()}
 		>
 			<Select.Group>
 				{#each options as heading (heading.value)}

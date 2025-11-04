@@ -31,9 +31,11 @@
 				false && 'border border-green-500',
 			]}
 		>
-			<div class="px-4 text-3xl font-semibold">Heading...</div>
+			<div class="px-4 text-2xl font-bold">Heading...</div>
 			<div class="mt-2 px-4 text-sm">
-				<Badge variant="secondary" class="bg-blue-500 dark:bg-blue-600">Project</Badge>
+				<Badge variant="secondary" class="bg-blue-500 shadow dark:bg-blue-700 dark:text-blue-200">
+					Project
+				</Badge>
 			</div>
 			<!-- <Separator /> -->
 			<div class={['mt-1', false && 'border border-red-500']}>
