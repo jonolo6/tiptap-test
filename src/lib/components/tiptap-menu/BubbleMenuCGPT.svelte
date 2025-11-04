@@ -26,7 +26,7 @@
 		// tippyOptions?: Partial<TippyProps>;
 		updateDelay?: number;
 		class?: ClassValue;
-		style?: string;
+		// style?: string;
 		// children?: Snippet;
 	};
 
@@ -37,14 +37,15 @@
 		// tippyOptions = {} as Partial<TippyProps>,
 		updateDelay = 0,
 		class: className = '',
-		style = '',
+		// style = '',
 		// children,
 	}: Props = $props();
 
 	const editor = $derived(model.editor);
 
-	let root = $state<HTMLDivElement | null>(null);
+	let element = $state<HTMLDivElement>();
 	let registeredWith: Editor | null = null;
+	let boundary = $derived(element?.parentElement);
 
 	onMount(() => {
 		if (registeredWith && registeredWith !== editor) {
@@ -56,11 +57,17 @@
 			registeredWith = null;
 		}
 
+		if (element == null) throw new Error('element null!');
+		if (boundary == null) throw new Error('boundary null!');
 		editor.registerPlugin(
 			BubbleMenuPlugin({
 				pluginKey: pluginKey as any,
 				editor,
-				element: root as HTMLElement,
+				element,
+				options: {
+					flip: { boundary },
+					shift: { boundary, padding: 2 },
+				},
 				// tippyOptions,
 				// options: {
 				// 	autoPlacement: { alignment: 'start' },
@@ -82,24 +89,6 @@
 			}
 		};
 	});
-
-	// const values = $derived(
-	// 	Object.entries(model.active)
-	// 		.filter(([_, value]) => value)
-	// 		.map(([key]) => key)
-	// );
-	// function setValues(newValues: string[]) {
-	// 	console.log({ newValues });
-	//
-	// 	const toSet = newValues.filter((newVal) => !values.includes(newVal));
-	// 	const toUnset = values.filter((oldVal) => !newValues.includes(oldVal));
-	// 	toSet.forEach((val) => {
-	// 		FORMAT_STATES.find(({ key }) => val === key)!.toggle(editor);
-	// 	});
-	// 	toUnset.forEach((val) => {
-	// 		FORMAT_STATES.find(({ key }) => val === key)!.toggle(editor);
-	// 	});
-	// }
 </script>
 
 {#snippet FormatToggle({
@@ -124,42 +113,37 @@
 	</Toggle>
 {/snippet}
 
-{#if editor != null}
-	<div
-		bind:this={root}
-		class={[
-			`flex items-center rounded-lg border-2 border-border bg-background p-1 
+<div
+	bind:this={element}
+	class={[
+		`flex items-center rounded-lg border-2 border-border bg-background p-1 
        text-sm shadow shadow-popover`,
-			className,
-		]}
-		{style}
-		style:visibility="hidden"
-		style:position="absolute"
-		style:top="0"
-		style:left="0"
-	>
-		<HeadingSelect {model} />
-		<ListSelect {model} />
+		className,
+	]}
+	style:visibility="hidden"
+	style:position="absolute"
+>
+	<HeadingSelect {model} />
+	<ListSelect {model} />
 
-		<Separator orientation="vertical" class="mx-1.5 py-2.5" />
-		{@render FormatToggle({
-			// class: 'ml-4',
-			Icon: BoldIcon,
-			format: 'bold',
-			toggle: () => editor.chain().focus().toggleBold().run(),
-		})}
-		{@render FormatToggle({
-			Icon: ItalicIcon,
-			format: 'italic',
-			toggle: () => editor.chain().focus().toggleItalic().run(),
-		})}
-		{@render FormatToggle({
-			Icon: StrikethroughIcon,
-			format: 'strike',
-			toggle: () => editor.chain().focus().toggleStrike().run(),
-		})}
-	</div>
-{/if}
+	<Separator orientation="vertical" class="mx-1.5 py-2.5" />
+	{@render FormatToggle({
+		// class: 'ml-4',
+		Icon: BoldIcon,
+		format: 'bold',
+		toggle: () => editor.chain().focus().toggleBold().run(),
+	})}
+	{@render FormatToggle({
+		Icon: ItalicIcon,
+		format: 'italic',
+		toggle: () => editor.chain().focus().toggleItalic().run(),
+	})}
+	{@render FormatToggle({
+		Icon: StrikethroughIcon,
+		format: 'strike',
+		toggle: () => editor.chain().focus().toggleStrike().run(),
+	})}
+</div>
 
 <style>
 	@reference "tailwindcss";

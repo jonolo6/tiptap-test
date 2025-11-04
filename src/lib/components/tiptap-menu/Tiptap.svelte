@@ -1,11 +1,10 @@
 <script lang="ts">
 	import type { Content } from '@tiptap/core';
 	import { onMount } from 'svelte';
+	import type { ClassValue } from 'svelte/elements';
 
 	import TiptapMenu from '$lib/components/tiptap-menu/TiptapMenu.svelte';
 	import { TiptapViewModel } from '$lib/components/tiptap-menu/TipTapViewModel.svelte';
-	import type { ClassValue } from 'svelte/elements';
-	import BubbleMenu from './BubbleMenu.svelte';
 	import BubbleMenuCgpt from './BubbleMenuCGPT.svelte';
 
 	let {
@@ -38,34 +37,15 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-	class={[classValue, false && 'border border-orange-500']}
-	onclick={() => model!.editor.commands.focus()}
->
-	<!-- <Item.Root variant="muted"> -->
-	<!-- 	<Item.Content> -->
-	<!-- 		<Item.Title>Debug info</Item.Title> -->
-	<!-- 		<Item.Description class="flex flex-col"> -->
-	<!-- 			<pre>{JSON.stringify(model?.active)}</pre> -->
-	<!-- 			<div>List: {model?.list}</div> -->
-	<!-- 			<div>Heading: {model?.heading}</div> -->
-	<!-- 		</Item.Description> -->
-	<!-- 	</Item.Content> -->
-	<!-- 	<Item.Actions> -->
-	<!-- 		<Button variant="outline" size="sm">Open</Button> -->
-	<!-- 	</Item.Actions> -->
-	<!-- </Item.Root> -->
-
+<div class={[classValue]} onclick={() => model!.editor.commands.focus()}>
 	{#if model != null}
+		{#if showMenuBar}
+			<TiptapMenu {model} class="" />
+		{/if}
 		<BubbleMenuCgpt
 			{model}
 			shouldShow={({ editor }) => editor.state.selection.from !== editor.state.selection.to}
 		/>
-	{/if}
-	<!-- </div> -->
-	<!-- <div class={[classValue ?? '', 'max-w-none', false && 'prose prose-slate dark:prose-invert']}> -->
-	{#if model != null && showMenuBar}
-		<TiptapMenu {model} class="" />
 	{/if}
 
 	<div bind:this={element} class="h-full px-4 pt-4 pb-8"></div>
