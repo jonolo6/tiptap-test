@@ -113,8 +113,8 @@
 <div
 	bind:this={element}
 	class={[
-		`flex items-center rounded-lg border-2 border-border bg-background px-1 
-       text-sm shadow shadow-popover`,
+		`flex items-center rounded-lg border border-border bg-background px-1 
+     text-sm shadow-md`,
 		className,
 	]}
 	style:visibility="hidden"

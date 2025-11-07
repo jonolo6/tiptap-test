@@ -91,7 +91,7 @@
 		<Select.Content
 			class={`focus-override z-50 rounded-lg border 
       border-border bg-background px-0.5 py-2
-      shadow-popover outline-hidden select-none data-[side=bottom]:translate-y-1
+      shadow-md outline-hidden select-none data-[side=bottom]:translate-y-1
       data-[side=bottom]:slide-in-from-top-2 data-[side=left]:-translate-x-1 
       data-[side=left]:slide-in-from-right-2 data-[side=right]:translate-x-1 
       data-[side=right]:slide-in-from-left-2 data-[side=top]:-translate-y-1 
