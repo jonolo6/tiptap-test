@@ -4,52 +4,45 @@
 		FileTextIcon,
 		FolderIcon,
 		FolderOpenIcon,
-		Trash2Icon
+		Trash2Icon,
 	} from '@lucide/svelte';
 
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import {
-		MenuAction,
-		MenuButton,
-		MenuItem,
-		MenuSub,
-		useSidebar
-	} from '$lib/components/ui/sidebar';
+	import * as Sidebar from '$lib/components/ui/sidebar';
+	import { useSidebar } from '$lib/components/ui/sidebar';
 	import NoteMenuItem from './NoteMenuItem.svelte';
 	import type { NavItem } from './test-data';
+	import MyCollapsible from '$lib/components/MyCollapsible.svelte';
 
 	type Props = { item: NavItem; isMobile?: boolean };
 	let { item, isMobile = useSidebar().isMobile }: Props = $props();
 
 	const hasNoChildren = $derived((item.children?.length ?? 0) === 0);
-
-	let isOpen = $state(false);
 </script>
 
 {#if hasNoChildren}
-	<MenuItem>
+	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
-			<MenuButton isActive={item.isActive} class={['group/menu-btn']}>
+			<Sidebar.MenuButton isActive={item.isActive} class={['group/menu-btn']}>
 				<!-- {#snippet child({ props })} -->
-				<FileTextIcon />
-				<a href={item.url}>{item.title}</a>
+				<FileTextIcon /> <a href={item.url}>{item.title}</a>
 				<!-- <a href={item.url} {...props}>{item.title}</a> -->
 				<!-- {/snippet} -->
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
-						<MenuAction
+						<Sidebar.MenuAction
 							{...props}
 							class={[
-								`opacity-0 group-hover/menu-btn:opacity-100 data-[state=open]:opacity-100 hover:dark:bg-slate-700`
+								`opacity-0 group-hover/menu-btn:opacity-100 data-[state=open]:opacity-100 hover:dark:bg-slate-700`,
 							]}
 						>
 							<EllipsisIcon />
 							<span class="sr-only">More</span>
-						</MenuAction>
+						</Sidebar.MenuAction>
 					{/snippet}
 				</DropdownMenu.Trigger>
-			</MenuButton>
+			</Sidebar.MenuButton>
 			<DropdownMenu.Content
 				class="w-48 rounded-lg"
 				side={isMobile ? 'bottom' : 'right'}
@@ -66,14 +59,14 @@
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
-	</MenuItem>
+	</Sidebar.MenuItem>
 {:else}
-	<MenuItem>
-		<Collapsible.Root bind:open={() => isOpen, (_v) => (isOpen = _v)}>
-			<DropdownMenu.Root>
-				<Collapsible.Trigger class="w-full">
-					<MenuButton isActive={item.isActive} class={['group/menu-btn']}>
-						{#if isOpen}
+	<Sidebar.MenuItem>
+		<MyCollapsible>
+			{#snippet children({ toggle, open })}
+				<DropdownMenu.Root>
+					<Sidebar.MenuButton isActive={item.isActive} class={['group/menu-btn']} onclick={toggle}>
+						{#if open}
 							<FolderOpenIcon />
 						{:else}
 							<FolderIcon />
@@ -83,42 +76,42 @@
 						</a>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
-								<MenuAction
+								<Sidebar.MenuAction
 									{...props}
 									class={[
-										`opacity-0 group-hover/menu-btn:opacity-100 data-[state=open]:opacity-100 hover:dark:bg-slate-700`
+										`opacity-0 group-hover/menu-btn:opacity-100 data-[state=open]:opacity-100 hover:dark:bg-slate-700`,
 									]}
 								>
 									<EllipsisIcon />
 									<span class="sr-only">More</span>
-								</MenuAction>
+								</Sidebar.MenuAction>
 							{/snippet}
 						</DropdownMenu.Trigger>
-					</MenuButton>
-				</Collapsible.Trigger>
-				<DropdownMenu.Content
-					class="w-48 rounded-lg"
-					side={isMobile ? 'bottom' : 'right'}
-					align={isMobile ? 'end' : 'start'}
-				>
-					<DropdownMenu.Item>
-						<FolderIcon class="text-muted-foreground" />
-						<span>Rename Note</span>
-					</DropdownMenu.Item>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Item>
-						<Trash2Icon class="text-muted-foreground" />
-						<span>Delete Note</span>
-					</DropdownMenu.Item>
-				</DropdownMenu.Content>
-				<Collapsible.Content>
-					<MenuSub class="mr-0 pr-0">
-						{#each item.children! as child (child.title)}
-							<NoteMenuItem item={child} />
-						{/each}
-					</MenuSub>
-				</Collapsible.Content>
-			</DropdownMenu.Root>
-		</Collapsible.Root>
-	</MenuItem>
+					</Sidebar.MenuButton>
+					<DropdownMenu.Content
+						class="w-48 rounded-lg"
+						side={isMobile ? 'bottom' : 'right'}
+						align={isMobile ? 'end' : 'start'}
+					>
+						<DropdownMenu.Item>
+							<FolderIcon class="text-muted-foreground" />
+							<span>Rename Note</span>
+						</DropdownMenu.Item>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item>
+							<Trash2Icon class="text-muted-foreground" />
+							<span>Delete Note</span>
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+					{#if open}
+						<Sidebar.MenuSub class="mr-0 pr-0">
+							{#each item.children! as child (child.title)}
+								<NoteMenuItem item={child} />
+							{/each}
+						</Sidebar.MenuSub>
+					{/if}
+				</DropdownMenu.Root>
+			{/snippet}
+		</MyCollapsible>
+	</Sidebar.MenuItem>
 {/if}
