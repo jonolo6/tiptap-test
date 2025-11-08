@@ -10,7 +10,9 @@
 	import '../app.css';
 	import '../tiptap.css';
 
-	let { children } = $props();
+	let { children, data } = $props();
+
+	$inspect({ data });
 </script>
 
 <svelte:head>
