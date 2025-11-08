@@ -1,248 +1,151 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { Editor, type Content } from '@tiptap/core';
-	import Document from '@tiptap/extension-document';
-	import Paragraph from '@tiptap/extension-paragraph';
-	import HardBreak from '@tiptap/extension-hard-break';
-	import Text from '@tiptap/extension-text';
-	import Bold from '@tiptap/extension-bold';
-	import Code from '@tiptap/extension-code';
-	import Italic from '@tiptap/extension-italic';
-	import Strike from '@tiptap/extension-strike';
-	import Underline from '@tiptap/extension-underline';
-	import Link from '@tiptap/extension-link';
-	import Placeholder from '@tiptap/extension-placeholder';
-	import BubbleMenu from '@tiptap/extension-bubble-menu';
-	import CharacterCount from '@tiptap/extension-character-count';
+	import { BoldIcon, ItalicIcon, StrikethroughIcon } from '@lucide/svelte';
+	import type { Editor } from '@tiptap/core';
+	import { BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
+	import type { PluginKey } from '@tiptap/pm/state';
+	import { onMount, type Component } from 'svelte';
+	import type { ClassValue } from 'svelte/elements';
+
+	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
+	import HeadingSelect from './HeadingSelect.svelte';
+	import ListSelect from './ListSelect.svelte';
+	import { type TiptapViewModel } from './TipTapViewModel.svelte';
+	import { BubbleMenuModel } from './BubbleMenuModel.svelte';
 
 	type Props = {
-		content: Content;
-		output: string;
-		limit: number;
-		bold: boolean;
-		italic: boolean;
-		strike: boolean;
-		underline: boolean;
-		link: boolean;
-		code: boolean;
-		placeholder: string;
-		editor: Editor;
+		model: TiptapViewModel;
+		pluginKey?: string | PluginKey;
+		shouldShow?: (args: {
+			editor: Editor;
+			view: any;
+			state: any;
+			oldState?: any;
+			from: number;
+			to: number;
+		}) => boolean;
+		updateDelay?: number;
+		class?: ClassValue;
 	};
 
 	let {
-		content = '',
-		output = $bindable(),
-		limit = 100,
-
-		bold = true,
-		italic = true,
-		strike = false,
-		underline = false,
-		link = false,
-		code = false,
-		placeholder = '',
-		editor,
+		model: tiptapModel,
+		pluginKey = 'bubbleMenu',
+		shouldShow,
+		updateDelay = 0,
+		class: className = '',
 	}: Props = $props();
 
-	let element = $state<HTMLElement>();
-	let bmenu = $state<HTMLElement>();
+	const editor = $derived(tiptapModel.editor);
+	const model = new BubbleMenuModel(tiptapModel);
 
-	const CustomBold = Bold.extend({
-		renderHTML({ HTMLAttributes }) {
-			// Original:
-			// return ['strong', HTMLAttributes, 0]
-			return ['b', HTMLAttributes, 0];
-		},
-	});
-
-	const setLink = () => {
-		if (editor.isActive('link')) {
-			editor.chain().focus().extendMarkRange('link').unsetLink().run();
-
-			return;
-		}
-
-		const previousUrl = editor.getAttributes('link').href;
-		const url = window.prompt('URL', previousUrl);
-
-		// cancelled
-		if (url === null) {
-			return;
-		}
-
-		// empty
-		if (url === '') {
-			editor.chain().focus().extendMarkRange('link').unsetLink().run();
-
-			return;
-		}
-
-		if (!/^https?:\/\//.test(url)) {
-			window.alert('DIRECCIÓN INVÁLIDA!!');
-			return;
-		}
-
-		// update link
-		editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-	};
+	let element = $state<HTMLDivElement>();
+	let registeredWith: Editor | null = null;
+	let boundary = $derived(element?.parentElement);
 
 	onMount(() => {
-		editor = new Editor({
-			element: element,
-			extensions: [
-				Document,
-				Paragraph,
-				Text,
-				//Bold,
-				CustomBold,
-				Code,
-				Italic,
-				Strike,
-				Underline,
-				Link.configure({
-					validate: (href) => /^https?:\/\//.test(href),
-					HTMLAttributes: { rel: null, target: null },
-				}),
-				BubbleMenu.configure({
-					element: bmenu,
-					tippyOptions: { duration: 100, theme: 'local', maxWidth: 450, appendTo: document.body },
-				}),
-				CharacterCount.configure({
-					limit,
-				}),
-				HardBreak.extend({
-					addKeyboardShortcuts() {
-						return {
-							Enter: () => this.editor.commands.setHardBreak(),
-						};
-					},
-				}).configure({ keepMarks: false }),
-				Placeholder.configure({ placeholder }),
-			],
-			content,
-			editorProps: {
-				attributes: {
-					class: 'border border-gray-300 rounded p-3 outline-none text-base',
-				},
-			},
-			onCreate({ editor }) {
-				// The editor is ready.
-				const html = editor.getHTML();
-				// send the content to an API here
-				output = html;
-			},
-			onTransaction: () => {
-				// force re-render so `editor.isActive` works as expected
-				editor = editor;
-			},
-			onUpdate: ({ editor }) => {
-				const html = editor.getHTML();
-				// send the content to an API here
-				output = html;
-			},
-		});
-	});
-
-	onDestroy(() => {
-		if (editor) {
-			editor.destroy();
+		if (registeredWith && registeredWith !== editor) {
+			try {
+				registeredWith.unregisterPlugin(pluginKey as any);
+			} catch {
+				/* no-op */
+			}
+			registeredWith = null;
 		}
+
+		if (element == null) throw new Error('element null!');
+		if (boundary == null) throw new Error('boundary null!');
+		editor.registerPlugin(
+			BubbleMenuPlugin({
+				pluginKey: pluginKey as any,
+				editor,
+				element,
+				options: {
+					flip: { boundary },
+					shift: { boundary, padding: 2 },
+				},
+				// tippyOptions,
+				// options: {
+				// 	autoPlacement: { alignment: 'start' },
+				// },
+				updateDelay,
+				shouldShow,
+			})
+		);
+		registeredWith = editor;
+
+		return () => {
+			try {
+				editor.unregisterPlugin(pluginKey as any);
+			} catch {
+				/* no-op */
+			}
+			if (registeredWith === editor) {
+				registeredWith = null;
+			}
+		};
 	});
 </script>
 
-<div bind:this={bmenu}>
-	{#if editor}
-		{#if bold}
-			<button
-				class="mx-1 px-1 text-sm text-gray-300 hover:text-white {editor.isActive('bold')
-					? 'rounded text-white ring ring-gray-100'
-					: ''}"
-				onclick={(e) => {
-					e.preventDefault();
-					editor.chain().focus().toggleBold().run();
-				}}
-			>
-				Negrita
-			</button>
-		{/if}
+{#snippet FormatToggle({
+	Icon,
+	class: classValue,
+	format,
+	toggle,
+}: {
+	class?: ClassValue;
+	Icon: Component;
+	format: string;
+	toggle: () => void;
+})}
+	<Toggle bind:pressed={() => tiptapModel.active[format] ?? false, () => toggle()}>
+		{#snippet child({ pressed, props })}
+			<div class={['my-0.5 flex size-6 items-center justify-center rounded p-1 hover:bg-muted']}>
+				<Icon
+					{...props}
+					class={[classValue, 'size-4 shrink-0 grow-0', pressed && 'text-purple-500']}
+				/>
+			</div>
+		{/snippet}
+	</Toggle>
+{/snippet}
 
-		{#if italic}
-			<button
-				class="mx-1 px-1 text-sm text-gray-300 hover:text-white {editor.isActive('italic')
-					? 'rounded text-white ring ring-gray-100'
-					: ''}"
-				onclick={(e) => {
-					e.preventDefault();
-					editor.chain().focus().toggleItalic().run();
-				}}
-			>
-				Cursiva
-			</button>
-		{/if}
+<div
+	bind:this={element}
+	class={[
+		`flex items-center rounded-lg border border-border bg-background px-1 
+     text-sm shadow-md`,
+		className,
+	]}
+	style:visibility="hidden"
+	style:position="absolute"
+>
+	<HeadingSelect {model} />
+	<ListSelect {model} />
 
-		{#if strike}
-			<button
-				class="mx-1 px-1 text-sm text-gray-300 hover:text-white {editor.isActive('strike')
-					? 'rounded text-white ring ring-gray-100'
-					: ''}"
-				onclick={(e) => {
-					e.preventDefault();
-					editor.chain().focus().toggleStrike().run();
-				}}
-			>
-				Tachado
-			</button>
-		{/if}
-
-		{#if underline}
-			<button
-				class="mx-1 px-1 text-sm text-gray-300 hover:text-white {editor.isActive('underline')
-					? 'rounded text-white ring ring-gray-100'
-					: ''}"
-				onclick={(e) => {
-					e.preventDefault();
-					editor.chain().focus().toggleUnderline().run();
-				}}
-			>
-				Subrayado
-			</button>
-		{/if}
-
-		{#if code}
-			<button
-				class={[
-					'mx-1 px-1 text-sm text-gray-300 hover:text-white',
-					editor.isActive('code') ? 'rounded text-white ring ring-gray-100' : '',
-				]}
-				onclick={(e) => {
-					e.preventDefault();
-					editor.chain().focus().toggleCode().run();
-				}}
-			>
-				Código
-			</button>
-		{/if}
-
-		{#if link}
-			<button
-				class="mx-1 px-1 text-sm text-gray-300 hover:text-white {editor.isActive('link')
-					? 'rounded text-white ring ring-gray-100'
-					: ''}"
-				onclick={(e) => {
-					e.preventDefault();
-					setLink();
-				}}
-			>
-				Link
-			</button>
-		{/if}
-	{/if}
+	<Separator orientation="vertical" class="mx-1.5 py-2.5" />
+	{@render FormatToggle({
+		// class: 'ml-4',
+		Icon: BoldIcon,
+		format: 'bold',
+		toggle: () => editor.chain().focus().toggleBold().run(),
+	})}
+	{@render FormatToggle({
+		Icon: ItalicIcon,
+		format: 'italic',
+		toggle: () => editor.chain().focus().toggleItalic().run(),
+	})}
+	{@render FormatToggle({
+		Icon: StrikethroughIcon,
+		format: 'strike',
+		toggle: () => editor.chain().focus().toggleStrike().run(),
+	})}
 </div>
 
-<div bind:this={element}></div>
+<style>
+	@reference "tailwindcss";
 
-{#if editor}
-	<div class="text-sm text-gray-500">
-		{editor.storage.characterCount.characters({ mode: 'textSize' })}/{limit} caracteres
-	</div>
-{/if}
+	.selected {
+		@apply text-purple-500;
+	}
+</style>

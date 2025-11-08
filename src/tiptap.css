@@ -4,6 +4,16 @@
 	outline: none;
 	@apply text-sm;
 
+	/* Things tailwind cannot do easily  */
+	ul:first-child > li:first-child {
+		margin-top: 1rem; /* Adjust as needed for your desired margin */
+	}
+
+	ul li {
+		margin-top: 0;
+		margin-bottom: 0; /* Ensure no vertical margin on other list items */
+	}
+
 	:first-child {
 		margin-top: 0;
 	}
@@ -18,7 +28,7 @@
 
 	/* Fix caret no-show */
 	[data-type='taskList'] p {
-		min-width: 1px;
+		/* min-width: 1px; */
 	}
 	p:empty::after {
 		content: '';
@@ -27,43 +37,38 @@
 	}
 
 	ul:not([data-type='taskList']) li {
-		list-style-type: disc;
+		/* list-style-type: disc; */
 	}
 	ol li {
-		list-style-type: decimal;
+		/* list-style-type: decimal; */
 	}
 
 	ul,
 	ol {
-		padding: 0 1rem;
-		margin: 1rem 1rem 1.25rem 0.4rem;
+		margin: 1rem 0rem;
 	}
 
 	/* Remove padding between nested lists */
 	ul ul,
 	li > ul,
 	li > ol {
-		padding-top: 0;
-		padding-bottom: 0;
-		margin-top: 0rem;
-		margin-bottom: 0rem;
-		/* border: 2px solid red; */
+		margin: 0rem 0rem 0rem 0rem;
 	}
 	ul {
-		padding-left: 1.2em;
+		/* padding-left: 1.2em; */
 	}
 	ul[data-type='taskList'] {
-		padding-left: 0px;
+		/* padding-left: 0px; */
 	}
 
 	ol ::marker {
-		font-weight: 600;
-		font-size: 0.95em;
-		color: oklch(55.4% 0.046 257.417);
+		/* font-weight: 600; */
+		/* font-size: 0.95em; */
+		/* color: oklch(55.4% 0.046 257.417); */
 	}
 
 	p {
-		@apply mb-1.5;
+		/* @apply mb-1.5; */
 	}
 
 	/* Heading styles */
@@ -73,31 +78,31 @@
 	h4,
 	h5,
 	h6 {
-		@apply mt-6 mb-1 font-semibold;
+		/* @apply mt-6 mb-1 font-semibold; */
 		/* text-wrap: pretty; */
 	}
 
 	h1,
 	h2 {
-		@apply mt-8 mb-2;
+		/* @apply mt-8 mb-2; */
 	}
 
 	h1 {
-		@apply text-2xl font-bold;
+		/* @apply text-2xl font-bold; */
 	}
 
 	h2 {
-		@apply mb-1.5 text-xl font-bold;
+		/* @apply mb-1.5 text-xl font-bold; */
 	}
 
 	h3 {
-		@apply mb-1.5 text-lg;
+		/* @apply mb-1.5 text-lg; */
 	}
 
 	h4,
 	h5,
 	h6 {
-		font-size: 1rem;
+		/* font-size: 1rem; */
 	}
 
 	/* Code and preformatted text styles */

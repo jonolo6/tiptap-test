@@ -86,20 +86,44 @@ export class TiptapViewModel {
 		this.editor = new Editor({
 			element,
 			extensions: [
+				Document,
+				Paragraph.configure({
+					HTMLAttributes: {
+						class: 'py-0.5',
+					},
+				}),
+				Text,
+				Heading.configure({
+					levels: [1, 2, 3],
+					HTMLAttributes: {
+						class: 'text-lg font-bold',
+					},
+				}),
 				Blockquote,
 				Bold,
-				BulletList,
+				Italic,
+				Strike,
 				CodeBlock,
-				Document,
 				Dropcursor,
 				HardBreak,
-				Heading,
 				HorizontalRule,
 				Image,
-				Italic,
-				ListItem,
-				OrderedList,
-				Paragraph,
+				BulletList.configure({
+					HTMLAttributes: {
+						class: 'pl-5 list-disc ',
+					},
+				}),
+				ListItem.configure({
+					HTMLAttributes: {
+						// class: 'first:mt-1',
+						// class: 'pl-2 list-disc',
+					},
+				}),
+				OrderedList.configure({
+					HTMLAttributes: {
+						class: 'dark:marker:text-slate-400 marker:text-slate-600 pl-5 list-decimal',
+					},
+				}),
 				Placeholder.configure({
 					// Use a placeholder:
 					placeholder: 'Notes…',
@@ -112,12 +136,10 @@ export class TiptapViewModel {
 					//   return 'Can you add some further context?'
 					// },
 				}),
-				Strike,
 				TaskList,
 				TaskItem.configure({
 					nested: true,
 				}),
-				Text,
 				UndoRedo,
 				// UniqueID.configure({
 				// 	types: ['taskItem']

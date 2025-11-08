@@ -5,7 +5,7 @@
 
 	import TiptapMenu from '$lib/components/tiptap-menu/TiptapMenu.svelte';
 	import { TiptapViewModel } from '$lib/components/tiptap-menu/TipTapViewModel.svelte';
-	import BubbleMenuCgpt from './BubbleMenuCGPT.svelte';
+	import BubbleMenu from '$lib/components/tiptap-menu/BubbleMenu.svelte';
 
 	let {
 		content = `
@@ -42,12 +42,13 @@
 		{#if showMenuBar}
 			<TiptapMenu {model} class="" />
 		{/if}
-		<BubbleMenuCgpt
+		<BubbleMenu
 			{model}
 			shouldShow={({ editor }) => editor.state.selection.from !== editor.state.selection.to}
 		/>
 	{/if}
 
+	<!-- <div bind:this={element} class="prose h-full px-4 pt-4 pb-8 dark:prose-invert"></div> -->
 	<div bind:this={element} class="h-full px-4 pt-4 pb-8"></div>
 </div>
 
