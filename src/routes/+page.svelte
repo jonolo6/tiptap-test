@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { ChevronDownIcon } from '@lucide/svelte';
 	import type { Content } from '@tiptap/core';
 	import { onMount } from 'svelte';
+	import type { ClassValue } from 'svelte/elements';
 
 	import Tiptap from '$lib/components/tiptap-menu/Tiptap.svelte';
 	import { Badge, badgeVariants } from '$lib/components/ui/badge';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import Toggle from '$lib/components/ui/toggle/toggle.svelte';
+
+	let { class: className = '' }: { class?: ClassValue } = $props();
 
 	let content = $state<Content | null>();
 	let hideNotes = $state(false);
@@ -23,7 +23,7 @@
 	}
 </script>
 
-<main class="px-4">
+<main class={['p2-4 px-4', className]}>
 	{#if content != null}
 		<div
 			class={[
