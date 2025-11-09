@@ -1,4 +1,5 @@
 import * as v from 'valibot';
+import { eq, lt, gte, ne } from 'drizzle-orm';
 
 import { command, query } from '$app/server';
 
@@ -10,6 +11,14 @@ export const getAllNotes = query(async () => {
 	const result = await db.select().from(notesTable);
 	console.log('loaded!', { result });
 	return result;
+});
+
+export const getNoteById = query(v.string(), async (id: string) => {
+	console.log('loading note...', { id });
+	const result = await db.select().from(notesTable).where(eq(notesTable.id, id));
+	console.log('loaded note!', { result });
+	if (result.length === 0) return null;
+	return result[0];
 });
 
 async function sleep(ms: number) {

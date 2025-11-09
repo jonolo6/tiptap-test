@@ -7,25 +7,34 @@
 		Trash2Icon,
 	} from '@lucide/svelte';
 
-	import * as Collapsible from '$lib/components/ui/collapsible';
+	import MyCollapsible from '$lib/components/MyCollapsible.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
-	import NoteMenuItem from './NoteMenuItem.svelte';
-	import type { NavItem } from './test-data';
-	import MyCollapsible from '$lib/components/MyCollapsible.svelte';
+	import type { notesTable } from '$lib/db/schema';
+	import { goto } from '$app/navigation';
+	import Button from '$lib/components/ui/button/button.svelte';
 
-	type Props = { item: NavItem; isMobile?: boolean };
-	let { item, isMobile = useSidebar().isMobile }: Props = $props();
+	type Props = { note: typeof notesTable.$inferSelect; isMobile?: boolean };
+	let { note, isMobile = useSidebar().isMobile }: Props = $props();
 
-	const hasNoChildren = $derived((item.children?.length ?? 0) === 0);
+	// const hasNoChildren = $derived((item.children?.length ?? 0) === 0);
+	const hasNoChildren = $state(true);
+	// TODO: Fix isActive on MenuButton
 </script>
 
 {#if hasNoChildren}
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
-			<Sidebar.MenuButton isActive={item.isActive} class={['group/menu-btn']}>
-				<FileTextIcon /> <a href={item.url}>{item.title}</a>
+			<Sidebar.MenuButton
+				isActive={false}
+				class={['group/menu-btn']}
+				onclick={() => goto(`/note/${note.id}`)}
+			>
+				<!-- TODO: make this link work! -->
+				<FileTextIcon />
+				<!-- <Button variant="ghost">test</Button> -->
+				{note.title}:{note.id}
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
 						<Sidebar.MenuAction
@@ -62,14 +71,14 @@
 		<MyCollapsible>
 			{#snippet children({ toggle, open })}
 				<DropdownMenu.Root>
-					<Sidebar.MenuButton isActive={item.isActive} class={['group/menu-btn']} onclick={toggle}>
+					<Sidebar.MenuButton isActive={false} class={['group/menu-btn']} onclick={toggle}>
 						{#if open}
 							<FolderOpenIcon />
 						{:else}
 							<FolderIcon />
 						{/if}
-						<a href={item.url} class="truncate whitespace-nowrap">
-							{item.title}
+						<a href={`${note.id}`} class="truncate whitespace-nowrap">
+							{note.title}:{note.id}
 						</a>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
@@ -102,9 +111,10 @@
 					</DropdownMenu.Content>
 					{#if open}
 						<Sidebar.MenuSub class="mr-0 pr-0">
-							{#each item.children! as child (child.title)}
-								<NoteMenuItem item={child} />
-							{/each}
+							<!-- TODO: Fix -->
+							<!-- {#each item.children! as child (child.title)} -->
+							<!-- 	<NoteMenuItem item={child} /> -->
+							<!-- {/each} -->
 						</Sidebar.MenuSub>
 					{/if}
 				</DropdownMenu.Root>

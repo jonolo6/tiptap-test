@@ -12,115 +12,85 @@
 	import type { ComponentProps } from 'svelte';
 	import NoteMenuItem from './NoteMenuItem.svelte';
 	import { left_sidebar_data, type NavGroup } from './test-data';
+	import type { notesTable } from '$lib/db/schema';
 
-	type Props = { data?: { navMain: NavGroup[] } };
+	type Props = { note: typeof notesTable.$inferSelect };
 
 	let {
-		data = left_sidebar_data,
+		// data = left_sidebar_data,
 		ref = $bindable(null),
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> & Props = $props();
 
-	let notes = $state([]);
+	let notes = $derived(await getAllNotes());
 </script>
 
 <Sidebar.Root {...restProps} bind:ref>
-	<!-- <Header> -->
-	<!-- 	<VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} /> -->
-	<!-- 	<SearchForm /> -->
-	<!-- </Header> -->
-
 	<Sidebar.Content>
 		<Sidebar.Group class="group/sidebargroup">
-			<!-- <Sidebar.GroupLabel> -->
-			<!-- 	<span> title...</span> -->
-			<!-- </Sidebar.GroupLabel> -->
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton isActive={true} class={['group/menu-btn']}>
-							<HouseIcon />
-							<a href={'#'}>Home</a>
+							<HouseIcon /> <a href={'#'}>Home</a>
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 
-		{#each data.navMain as group (group.title)}
-			<Collapsible.Root title={group.title} open class="group/collapsible">
-				<Sidebar.Group class="group/sidebargroup">
-					{#if group.title != null}
-						<Sidebar.GroupLabel>
-							{#snippet child({ props })}
-								<Collapsible.Trigger {...props}>
-									<span class="grow-1 text-left">
-										{group.title}
-									</span>
-									{#if group.add != null}
-										<Button
-											variant="ghost"
-											size="sm"
-											class={[
-												'invisible h-5 w-6 p-0 transition-transform group-hover/sidebargroup:visible',
-											]}
-											onclick={(e) => {
-												e.preventDefault();
-												e.stopPropagation();
-												group.add!();
-												insertNote('')
-													.then((result) => {
-														console.log({ result });
-													})
-													.catch((e) => {
-														console.error(e);
-													});
-											}}
-										>
-											<PlusIcon />
-										</Button>
-									{/if}
+		<!-- {#each data.navMain as group (group.title)} -->
+		<Collapsible.Root title={'Notes'} open class="group/collapsible">
+			<Sidebar.Group class="group/sidebargroup">
+				<Sidebar.GroupLabel>
+					{#snippet child({ props })}
+						<Collapsible.Trigger {...props}>
+							<span class="grow-1 text-left">Notes</span>
+							<Button
+								variant="ghost"
+								size="sm"
+								class={[
+									'invisible h-5 w-6 p-0 transition-transform group-hover/sidebargroup:visible',
+								]}
+								onclick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
 
-									<Button variant="ghost" size="sm" class="h-5 w-6 p-0 ">
-										<ChevronRightIcon
-											class={`invisible ml-auto transition-transform group-hover/sidebargroup:visible 
+									insertNote('')
+										.then((result) => {
+											console.log({ result });
+										})
+										.catch((e) => {
+											console.error(e);
+										});
+								}}
+							>
+								<PlusIcon />
+							</Button>
+
+							<Button variant="ghost" size="sm" class="h-5 w-6 p-0 ">
+								<ChevronRightIcon
+									class={`invisible ml-auto transition-transform group-hover/sidebargroup:visible 
                       group-data-[state=closed]/collapsible:visible 
                       group-data-[state=open]/collapsible:rotate-90`}
-										/>
-									</Button>
-								</Collapsible.Trigger>
-							{/snippet}
-						</Sidebar.GroupLabel>
-					{/if}
-					<Collapsible.Content>
-						<Sidebar.GroupContent>
-							<Sidebar.Menu>
-								<!-- {#each notes as item (item.title)} -->
-								<!-- 	<NoteMenuItem {item} /> -->
-								<!-- {/each} -->
-								{#await getAllNotes()}
-									<div>Loading...</div>
-								{:then notes}
-									<div>Notes: {notes.length}</div>
-									{#each notes as note (note.id)}
-										<NoteMenuItem item={note} />
-									{/each}
-								{:catch error}
-									<div>{error}</div>
-								{/await}
-								<!-- <Sidebar.MenuButton -->
-								<!-- 	onclick={() => { -->
-								<!-- 		console.log({ clicked }); -->
-								<!-- 	}} -->
-								<!-- > -->
-								<!-- 	test -->
-								<!-- </Sidebar.MenuButton> -->
-							</Sidebar.Menu>
-						</Sidebar.GroupContent>
-					</Collapsible.Content>
-				</Sidebar.Group>
-			</Collapsible.Root>
-		{/each}
+								/>
+							</Button>
+						</Collapsible.Trigger>
+					{/snippet}
+				</Sidebar.GroupLabel>
+				<Collapsible.Content>
+					<Sidebar.GroupContent>
+						<Sidebar.Menu>
+							<!-- <div>Notes: {notes.length}</div> -->
+							{#each notes as note (note.id)}
+								<NoteMenuItem {note} />
+							{/each}
+						</Sidebar.Menu>
+					</Sidebar.GroupContent>
+				</Collapsible.Content>
+			</Sidebar.Group>
+		</Collapsible.Root>
+		<!-- {/each} -->
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<DarkSwitchMenu />
