@@ -3,7 +3,7 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 export const notesTable = sqliteTable('notes_table', {
 	id: int().primaryKey({ autoIncrement: true }),
 	title: text().notNull(),
-	content: text(),
+	content: text({ mode: 'json' }),
 	// age: int().notNull(),
 	// email: text().notNull().unique(),
 });

@@ -33,6 +33,10 @@
 			model?.destroy();
 		};
 	});
+	$effect(() => {
+		// TODO: this doesn't work - too aggresive and spaces are removed
+		// model?.editor.commands.setContent(content);
+	});
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

@@ -16,11 +16,6 @@
 		content = temp ? JSON.parse(temp) : '';
 		console.log({ content });
 	});
-
-	function saveContent(content: any) {
-		console.log('saving', { content });
-		localStorage.setItem('tiptapContent', JSON.stringify(content));
-	}
 </script>
 
 <main class={['p2-4 px-4', className]}>
@@ -45,14 +40,15 @@
 				<!-- <Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}> -->
 				<!-- 	<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} /> -->
 				<!-- </Toggle> -->
-				{#if !hideNotes}
-					<Tiptap
-						class={['h-full', false && 'border border-red-500']}
-						{content}
-						onUpdate={(m) => saveContent(m.editor.getJSON())}
-						showMenuBar={false}
-					/>
-				{/if}
+				<div>Select node...</div>
+				<!-- {#if !hideNotes} -->
+				<!-- 	<Tiptap -->
+				<!-- 		class={['h-full', false && 'border border-red-500']} -->
+				<!-- 		{content} -->
+				<!-- 		onUpdate={(m) => saveContent(m.editor.getJSON())} -->
+				<!-- 		showMenuBar={false} -->
+				<!-- 	/> -->
+				<!-- {/if} -->
 			</div>
 			<div class="px-4">
 				<Badge>All</Badge>

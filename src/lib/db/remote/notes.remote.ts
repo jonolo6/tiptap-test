@@ -1,8 +1,7 @@
+import { eq } from 'drizzle-orm';
 import * as v from 'valibot';
-import { eq, lt, gte, ne } from 'drizzle-orm';
 
 import { command, query } from '$app/server';
-
 import { db } from '$lib/db';
 import { notesTable } from '$lib/db/schema';
 
@@ -21,12 +20,23 @@ export const getNoteById = query(v.string(), async (id: string) => {
 	return result[0];
 });
 
-async function sleep(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export const insertNote = command(v.string(), async (title: string) => {
 	console.log('inserting...', { title });
 	await db.insert(notesTable).values({ title });
 	getAllNotes().refresh();
 });
+
+export const updateNoteContent = command(
+	v.object({ id: v.string(), content: v.any() }),
+	async ({ id, content }) => {
+		console.log('updating...', { id });
+		await db.update(notesTable).set({ content }).where(eq(notesTable.id, id));
+		console.log('updating', { id });
+		getNoteById(id).refresh();
+		console.log('updated!', { id });
+	}
+);
+
+async function sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}

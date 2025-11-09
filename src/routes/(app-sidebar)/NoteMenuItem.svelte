@@ -20,7 +20,10 @@
 
 	// const hasNoChildren = $derived((item.children?.length ?? 0) === 0);
 	const hasNoChildren = $state(true);
-	// TODO: Fix isActive on MenuButton
+
+	function navigateTo(id: string | number) {
+		goto(`/note/${id}`);
+	}
 </script>
 
 {#if hasNoChildren}
@@ -29,12 +32,11 @@
 			<Sidebar.MenuButton
 				isActive={false}
 				class={['group/menu-btn']}
-				onclick={() => goto(`/note/${note.id}`)}
+				onclick={() => navigateTo(note.id)}
 			>
 				<!-- TODO: make this link work! -->
 				<FileTextIcon />
-				<!-- <Button variant="ghost">test</Button> -->
-				{note.title}:{note.id}
+				{note.title}
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
 						<Sidebar.MenuAction

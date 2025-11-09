@@ -11,18 +11,27 @@
 	import { ChevronRightIcon, HouseIcon, PlusIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
 	import NoteMenuItem from './NoteMenuItem.svelte';
-	import { left_sidebar_data, type NavGroup } from './test-data';
-	import type { notesTable } from '$lib/db/schema';
 
-	type Props = { note: typeof notesTable.$inferSelect };
+	type Props = {};
 
-	let {
-		// data = left_sidebar_data,
-		ref = $bindable(null),
-		...restProps
-	}: ComponentProps<typeof Sidebar.Root> & Props = $props();
+	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> & Props =
+		$props();
 
 	let notes = $derived(await getAllNotes());
+
+	function onClickInsertNote(e: MouseEvent) {
+		console.log('Insert Note clicked', { e });
+		e.preventDefault();
+		e.stopPropagation();
+
+		insertNote('')
+			.then((result) => {
+				console.log({ result });
+			})
+			.catch((e) => {
+				console.error(e);
+			});
+	}
 </script>
 
 <Sidebar.Root {...restProps} bind:ref>
@@ -39,7 +48,6 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 
-		<!-- {#each data.navMain as group (group.title)} -->
 		<Collapsible.Root title={'Notes'} open class="group/collapsible">
 			<Sidebar.Group class="group/sidebargroup">
 				<Sidebar.GroupLabel>
@@ -49,21 +57,8 @@
 							<Button
 								variant="ghost"
 								size="sm"
-								class={[
-									'invisible h-5 w-6 p-0 transition-transform group-hover/sidebargroup:visible',
-								]}
-								onclick={(e) => {
-									e.preventDefault();
-									e.stopPropagation();
-
-									insertNote('')
-										.then((result) => {
-											console.log({ result });
-										})
-										.catch((e) => {
-											console.error(e);
-										});
-								}}
+								class="invisible h-5 w-6 p-0 transition-transform group-hover/sidebargroup:visible"
+								onclick={(e) => onClickInsertNote(e)}
 							>
 								<PlusIcon />
 							</Button>
@@ -81,7 +76,6 @@
 				<Collapsible.Content>
 					<Sidebar.GroupContent>
 						<Sidebar.Menu>
-							<!-- <div>Notes: {notes.length}</div> -->
 							{#each notes as note (note.id)}
 								<NoteMenuItem {note} />
 							{/each}
