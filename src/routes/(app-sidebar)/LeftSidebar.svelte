@@ -23,8 +23,8 @@
 
 <Sidebar.Root {...restProps} bind:ref>
 	<!-- <Header> -->
-	<!-- 	<!-- <VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} /> -->
-	<!-- 	<!-- <SearchForm /> -->
+	<!-- 	<VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} /> -->
+	<!-- 	<SearchForm /> -->
 	<!-- </Header> -->
 	<Sidebar.Content>
 		{#each data.navMain as group (group.title)}
