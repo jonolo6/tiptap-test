@@ -7,7 +7,7 @@
 
 	import DarkSwitchMenu from '$lib/components/ui/DarkSwitchMenu.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getAllNotes } from '$lib/db/remote/notes.remote';
+	import { getAllNotes, insertNote } from '$lib/db/remote/notes.remote';
 	import { ChevronRightIcon, HouseIcon, PlusIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
 	import NoteMenuItem from './NoteMenuItem.svelte';
@@ -20,6 +20,8 @@
 		ref = $bindable(null),
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> & Props = $props();
+
+	let notes = $state([]);
 </script>
 
 <Sidebar.Root {...restProps} bind:ref>
@@ -66,6 +68,13 @@
 												e.preventDefault();
 												e.stopPropagation();
 												group.add!();
+												insertNote('')
+													.then((result) => {
+														console.log({ result });
+													})
+													.catch((e) => {
+														console.error(e);
+													});
 											}}
 										>
 											<PlusIcon />
@@ -86,10 +95,19 @@
 					<Collapsible.Content>
 						<Sidebar.GroupContent>
 							<Sidebar.Menu>
-								{#each group.items as item (item.title)}
-									<NoteMenuItem {item} />
-								{/each}
-								<hr />
+								<!-- {#each notes as item (item.title)} -->
+								<!-- 	<NoteMenuItem {item} /> -->
+								<!-- {/each} -->
+								{#await getAllNotes()}
+									<div>Loading...</div>
+								{:then notes}
+									<div>Notes: {notes.length}</div>
+									{#each notes as note (note.id)}
+										<NoteMenuItem item={note} />
+									{/each}
+								{:catch error}
+									<div>{error}</div>
+								{/await}
 								<!-- <Sidebar.MenuButton -->
 								<!-- 	onclick={() => { -->
 								<!-- 		console.log({ clicked }); -->
@@ -103,17 +121,6 @@
 				</Sidebar.Group>
 			</Collapsible.Root>
 		{/each}
-
-		{#await getAllNotes()}
-			<div>Loading...</div>
-		{:then notes}
-			<div>Notes: {notes.length}</div>
-			{#each notes as { title }}
-				<div>{title}</div>
-			{/each}
-		{:catch error}
-			<div>{error}</div>
-		{/await}
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<DarkSwitchMenu />

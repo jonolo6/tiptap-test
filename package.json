@@ -46,7 +46,8 @@
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.44.7",
 		"mode-watcher": "^1.1.0",
-		"tippy.js": "^6.3.7"
+		"tippy.js": "^6.3.7",
+		"valibot": "^1.1.0"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.0",
