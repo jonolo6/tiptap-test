@@ -29,7 +29,7 @@
 	<Sidebar.Content>
 		{#each data.navMain as group (group.title)}
 			<Collapsible.Root title={group.title} open class="group/collapsible">
-				<Sidebar.Group>
+				<Sidebar.Group class="group/sidebargroup">
 					{#if group.title != null}
 						<Sidebar.GroupLabel>
 							{#snippet child({ props })}
@@ -41,9 +41,10 @@
 										<Button
 											variant="ghost"
 											size="sm"
-											class="h-5 w-6 p-0"
+											class={[
+												'invisible h-5 w-6 p-0 transition-transform group-hover/sidebargroup:visible',
+											]}
 											onclick={(e) => {
-												console.log('adding...', { add: group.add });
 												e.preventDefault();
 												e.stopPropagation();
 												group.add!();
@@ -55,7 +56,9 @@
 
 									<Button variant="ghost" size="sm" class="h-5 w-6 p-0 ">
 										<ChevronRightIcon
-											class="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"
+											class={`invisible ml-auto transition-transform group-hover/sidebargroup:visible 
+                      group-data-[state=closed]/collapsible:visible 
+                      group-data-[state=open]/collapsible:rotate-90`}
 										/>
 									</Button>
 								</Collapsible.Trigger>
