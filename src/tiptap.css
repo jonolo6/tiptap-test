@@ -9,6 +9,8 @@
 		margin-top: 1rem; /* Adjust as needed for your desired margin */
 	}
 
+	/* Old...*/
+
 	ul li {
 		margin-top: 0;
 		margin-bottom: 0; /* Ensure no vertical margin on other list items */

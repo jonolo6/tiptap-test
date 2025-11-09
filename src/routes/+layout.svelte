@@ -2,10 +2,9 @@
 	import { ModeWatcher } from 'mode-watcher';
 
 	import favicon from '$lib/assets/favicon.svg';
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import LeftSidebar from './(app-sidebar)/LeftSidebar.svelte';
-	import { Separator } from '$lib/components/ui/separator';
-	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 
 	import '../app.css';
 	import '../tiptap.css';
@@ -21,7 +20,7 @@
 
 <ModeWatcher />
 
-<Sidebar.Provider>
+<Sidebar.Provider style="--sidebar-width: 12rem; --sidebar-width-mobile: 12rem;">
 	<LeftSidebar />
 	<Sidebar.Inset>
 		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">

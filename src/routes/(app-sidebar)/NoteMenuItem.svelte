@@ -25,10 +25,7 @@
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
 			<Sidebar.MenuButton isActive={item.isActive} class={['group/menu-btn']}>
-				<!-- {#snippet child({ props })} -->
 				<FileTextIcon /> <a href={item.url}>{item.title}</a>
-				<!-- <a href={item.url} {...props}>{item.title}</a> -->
-				<!-- {/snippet} -->
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
 						<Sidebar.MenuAction
@@ -71,7 +68,7 @@
 						{:else}
 							<FolderIcon />
 						{/if}
-						<a href={item.url}>
+						<a href={item.url} class="truncate whitespace-nowrap">
 							{item.title}
 						</a>
 						<DropdownMenu.Trigger>

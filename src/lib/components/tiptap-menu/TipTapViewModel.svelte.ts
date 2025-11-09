@@ -139,6 +139,9 @@ export class TiptapViewModel {
 				TaskList,
 				TaskItem.configure({
 					nested: true,
+					HTMLAttributes: {
+						class: '[&_p]:min-w-1',
+					},
 				}),
 				UndoRedo,
 				// UniqueID.configure({
