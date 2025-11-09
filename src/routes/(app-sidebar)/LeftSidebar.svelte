@@ -5,12 +5,13 @@
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 
-	import { ChevronRightIcon, PlusIcon } from '@lucide/svelte';
+	import DarkSwitchMenu from '$lib/components/ui/DarkSwitchMenu.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { getAllNotes } from '$lib/db/remote/notes.remote';
+	import { ChevronRightIcon, HouseIcon, PlusIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
 	import NoteMenuItem from './NoteMenuItem.svelte';
 	import { left_sidebar_data, type NavGroup } from './test-data';
-	import DarkSwitchMenu from '$lib/components/ui/DarkSwitchMenu.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
 
 	type Props = { data?: { navMain: NavGroup[] } };
 
@@ -26,7 +27,24 @@
 	<!-- 	<VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} /> -->
 	<!-- 	<SearchForm /> -->
 	<!-- </Header> -->
+
 	<Sidebar.Content>
+		<Sidebar.Group class="group/sidebargroup">
+			<!-- <Sidebar.GroupLabel> -->
+			<!-- 	<span> title...</span> -->
+			<!-- </Sidebar.GroupLabel> -->
+			<Sidebar.GroupContent>
+				<Sidebar.Menu>
+					<Sidebar.MenuItem>
+						<Sidebar.MenuButton isActive={true} class={['group/menu-btn']}>
+							<HouseIcon />
+							<a href={'#'}>Home</a>
+						</Sidebar.MenuButton>
+					</Sidebar.MenuItem>
+				</Sidebar.Menu>
+			</Sidebar.GroupContent>
+		</Sidebar.Group>
+
 		{#each data.navMain as group (group.title)}
 			<Collapsible.Root title={group.title} open class="group/collapsible">
 				<Sidebar.Group class="group/sidebargroup">
@@ -71,6 +89,7 @@
 								{#each group.items as item (item.title)}
 									<NoteMenuItem {item} />
 								{/each}
+								<hr />
 								<!-- <Sidebar.MenuButton -->
 								<!-- 	onclick={() => { -->
 								<!-- 		console.log({ clicked }); -->
@@ -84,6 +103,17 @@
 				</Sidebar.Group>
 			</Collapsible.Root>
 		{/each}
+
+		{#await getAllNotes()}
+			<div>Loading...</div>
+		{:then notes}
+			<div>Notes: {notes.length}</div>
+			{#each notes as { title }}
+				<div>{title}</div>
+			{/each}
+		{:catch error}
+			<div>{error}</div>
+		{/await}
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<DarkSwitchMenu />

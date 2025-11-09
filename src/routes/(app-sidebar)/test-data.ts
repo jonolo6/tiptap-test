@@ -18,7 +18,6 @@ export type Note = {
 
 export const left_sidebar_data: { navMain: NavGroup[] } = {
 	navMain: [
-		{ items: [{ title: 'Home', url: '/', isActive: true }] },
 		{
 			title: 'Notes',
 			add: () => {

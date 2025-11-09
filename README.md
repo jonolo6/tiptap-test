@@ -18,3 +18,7 @@
 ### Backlinks
 
 - [ ] Backlinks.links between projects
+
+## DB
+
+Create new DB `pnpm dlx drizzle-kit push`
