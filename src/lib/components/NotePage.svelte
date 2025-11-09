@@ -82,9 +82,11 @@
 </main>
 
 <style>
+	@reference 'tailwindcss';
+
 	div[contenteditable]:empty::before {
 		content: attr(data-placeholder);
-		color: #9ca3af; /* Tailwind gray-400 */
+		color: var(--color-slate-500);
 		pointer-events: none; /* Prevents the placeholder from being selectable */
 		display: block; /* Ensures proper display */
 	}
