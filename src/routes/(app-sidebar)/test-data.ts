@@ -3,14 +3,18 @@ export type NavGroup = {
 	items: NavItem[];
 	add?: () => void;
 };
+export type NavItem = Folder | Note;
 export type Folder = {
 	title: string;
 	url?: string;
 	isActive?: boolean;
 	children: NavItem[];
 };
-export type Note = { title: string; url?: string; isActive?: boolean };
-export type NavItem = Folder | Note;
+export type Note = {
+	title: string;
+	url?: string;
+	isActive?: boolean;
+};
 
 export const left_sidebar_data: { navMain: NavGroup[] } = {
 	navMain: [
