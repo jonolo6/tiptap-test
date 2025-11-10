@@ -1,36 +1,26 @@
 <script lang="ts">
 	import type { Content } from '@tiptap/core';
-	import { onMount } from 'svelte';
 	import type { ClassValue } from 'svelte/elements';
 
 	import Tiptap from '$lib/components/tiptap-menu/Tiptap.svelte';
 	import { Badge, badgeVariants } from '$lib/components/ui/badge';
-	import { page } from '$app/state';
 	import { getNoteById, updateNoteContent, updateNoteTitle } from '$lib/db/remote/notes.remote';
 
 	let { id, class: className = '' }: { id: string; class?: ClassValue } = $props();
 
-	// const id = $derived(page.params['id']);
-	const note = $derived(id ? getNoteById(id) : null);
-	const content = $derived((await note)?.content as Content);
-	const title = $derived((await note)?.title ?? '');
-
-	const hasNoTitle = $derived(title == null || title.length === 0);
-	const niceTitle = $derived(hasNoTitle ? 'N/A' : title);
+	const note = $derived(getNoteById(id));
 	const newLineRegex = /^[\n\r]$/;
 
-	// let content = $state<Content | null>();
 	let hideNotes = $state(false);
 
 	function saveContent(content: any) {
-		console.log('saveContent', { id, content });
 		if (id == null) throw new Error('need id!');
 		updateNoteContent({ id, content });
 	}
 
 	function setTitle(newTitle: string) {
-		console.log({ newTitle });
 		updateNoteTitle({ id, title: newTitle });
+		title = newTitle; // optimistic updating...
 	}
 
 	function clearNewlineForPlaceholder(e: InputEvent) {
@@ -39,6 +29,8 @@
 			target.innerText = '';
 		}
 	}
+
+	let title = $derived(note != null ? (await note).title : '');
 </script>
 
 <main class={['p2-4 px-4', className]}>
@@ -48,7 +40,6 @@
 			false && 'border border-green-500',
 		]}
 	>
-		<!-- oninput={(e) => handleInput(e)} -->
 		<div
 			class="px-4 text-2xl font-bold focus:outline-none"
 			contenteditable
@@ -80,12 +71,16 @@
 			<!-- </Toggle> -->
 			{#if !hideNotes}
 				{#key id}
-					<Tiptap
-						class={['h-full', false && 'border border-red-500']}
-						{content}
-						onUpdate={(m) => saveContent(m.editor.getJSON())}
-						showMenuBar={false}
-					/>
+					{#await note then note}
+						{#if note != null}
+							<Tiptap
+								class={['h-full', false && 'border border-red-500']}
+								content={note.content as Content}
+								onUpdate={(m) => saveContent(m.editor.getJSON())}
+								showMenuBar={false}
+							/>
+						{/if}
+					{/await}
 				{/key}
 			{/if}
 		</div>
