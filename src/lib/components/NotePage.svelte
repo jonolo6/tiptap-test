@@ -5,6 +5,7 @@
 	import Tiptap from '$lib/components/tiptap-menu/Tiptap.svelte';
 	import { Badge, badgeVariants } from '$lib/components/ui/badge';
 	import { getNoteById, updateNoteContent, updateNoteTitle } from '$lib/db/remote/notes.remote';
+	import { page } from '$app/state';
 
 	let { id, class: className = '' }: { id: string; class?: ClassValue } = $props();
 
@@ -90,6 +91,9 @@
 			<Badge variant="outline">...</Badge>
 		</div>
 		<div class={['mt-6 min-h-20 px-4']}>Tasks...</div>
+		<!-- <div> -->
+		<!-- 	<pre class="text-sm">{JSON.stringify(page, null, 2)}</pre> -->
+		<!-- </div> -->
 	</div>
 </main>
 

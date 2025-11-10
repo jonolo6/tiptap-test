@@ -11,12 +11,15 @@
 	import { ChevronRightIcon, HouseIcon, PlusIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
 	import NoteMenuItem from './NoteMenuItem.svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 
 	type Props = {};
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> & Props =
 		$props();
 
+	const isActive = $derived(page.route['id'] === '/');
 	let notes = $derived(getAllNotes());
 
 	function onClickInsertNote(e: MouseEvent) {
@@ -40,8 +43,8 @@
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton isActive={true} class={['group/menu-btn']}>
-							<HouseIcon /> <a href={'#'}>Home</a>
+						<Sidebar.MenuButton {isActive} class={['group/menu-btn']} onclick={() => goto('/')}>
+							<HouseIcon />Home
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
 				</Sidebar.Menu>

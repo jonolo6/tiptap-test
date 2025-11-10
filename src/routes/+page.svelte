@@ -5,11 +5,14 @@
 
 	import Tiptap from '$lib/components/tiptap-menu/Tiptap.svelte';
 	import { Badge, badgeVariants } from '$lib/components/ui/badge';
+	import { page } from '$app/state';
 
 	let { class: className = '' }: { class?: ClassValue } = $props();
 
 	let content = $state<Content | null>();
 	let hideNotes = $state(false);
+
+	const isActive = $derived(page.route['id'] === '/');
 
 	onMount(() => {
 		const temp = localStorage.getItem('tiptapContent');
@@ -40,7 +43,9 @@
 				<!-- <Toggle class="absolute top-0 right-0" size="sm" bind:pressed={hideNotes}> -->
 				<!-- 	<ChevronDownIcon class={['transition-all', hideNotes ? '-rotate-90' : '']} /> -->
 				<!-- </Toggle> -->
-				<div>Select node...</div>
+				<!-- <div>Select node...</div> -->
+				<!-- <pre class="text-sm">{JSON.stringify(page, null, 2)}</pre> -->
+
 				<!-- {#if !hideNotes} -->
 				<!-- 	<Tiptap -->
 				<!-- 		class={['h-full', false && 'border border-red-500']} -->

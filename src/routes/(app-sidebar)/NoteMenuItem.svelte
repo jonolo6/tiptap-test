@@ -7,16 +7,21 @@
 		Trash2Icon,
 	} from '@lucide/svelte';
 
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import MyCollapsible from '$lib/components/MyCollapsible.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
+	import { deleteNote } from '$lib/db/remote/notes.remote';
 	import type { notesTable } from '$lib/db/schema';
-	import { goto } from '$app/navigation';
-	import Button from '$lib/components/ui/button/button.svelte';
 
 	type Props = { note: typeof notesTable.$inferSelect; isMobile?: boolean };
 	let { note, isMobile = useSidebar().isMobile }: Props = $props();
+
+	const isActive = $derived(
+		page.route['id'] === '/note/[id]' && page.params['id'] === `${note.id}`
+	);
 
 	// const hasNoChildren = $derived((item.children?.length ?? 0) === 0);
 	const hasNoChildren = $state(true);
@@ -30,7 +35,7 @@
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
 			<Sidebar.MenuButton
-				isActive={false}
+				{isActive}
 				class={['group/menu-btn truncate']}
 				onclick={() => navigateTo(note.id)}
 			>
@@ -44,6 +49,11 @@
 							class={[
 								`opacity-0 group-hover/menu-btn:opacity-100 data-[state=open]:opacity-100 hover:dark:bg-slate-700`,
 							]}
+							onclick={(e) => {
+								console.log('clicked...');
+								e.preventDefault();
+								e.stopPropagation();
+							}}
 						>
 							<EllipsisIcon />
 							<span class="sr-only">More</span>
@@ -61,7 +71,12 @@
 					<span>Rename Note</span>
 				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item
+					onclick={() => {
+						deleteNote(note.id);
+						goto('/');
+					}}
+				>
 					<Trash2Icon class="text-muted-foreground" />
 					<span>Delete Note</span>
 				</DropdownMenu.Item>

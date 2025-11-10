@@ -36,6 +36,11 @@ export const updateNoteTitle = command(
 	}
 );
 
+export const deleteNote = command(v.number(), async (id) => {
+	await db.delete(notesTable).where(eq(notesTable.id, id));
+	getAllNotes().refresh();
+});
+
 // Private...
 
 async function sleep(ms: number) {
