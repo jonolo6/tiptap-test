@@ -31,7 +31,7 @@
 		<DropdownMenu.Root>
 			<Sidebar.MenuButton
 				isActive={false}
-				class={['group/menu-btn']}
+				class={['group/menu-btn truncate']}
 				onclick={() => navigateTo(note.id)}
 			>
 				<!-- TODO: make this link work! -->

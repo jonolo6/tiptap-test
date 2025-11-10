@@ -30,7 +30,11 @@
 	// });
 </script>
 
-<NotePage {id} />
+{#key id}
+	{#if id != null}
+		<NotePage {id} />
+	{/if}
+{/key}
 <!-- <div class="flex bg-blue-500"> -->
 <!-- 	<span> note: </span> -->
 <!-- 	<pre>{JSON.stringify(note)}</pre> -->

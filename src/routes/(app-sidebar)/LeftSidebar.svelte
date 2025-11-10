@@ -17,7 +17,7 @@
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> & Props =
 		$props();
 
-	let notes = $derived(await getAllNotes());
+	let notes = $derived(getAllNotes());
 
 	function onClickInsertNote(e: MouseEvent) {
 		console.log('Insert Note clicked', { e });
@@ -76,9 +76,11 @@
 				<Collapsible.Content>
 					<Sidebar.GroupContent>
 						<Sidebar.Menu>
-							{#each notes as note (note.id)}
-								<NoteMenuItem {note} />
-							{/each}
+							{#await notes then notes}
+								{#each notes as note (note.id)}
+									<NoteMenuItem {note} />
+								{/each}
+							{/await}
 						</Sidebar.Menu>
 					</Sidebar.GroupContent>
 				</Collapsible.Content>

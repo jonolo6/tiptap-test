@@ -37,6 +37,20 @@ export const updateNoteContent = command(
 	}
 );
 
+export const updateNoteTitle = command(
+	v.object({ id: v.string(), title: v.string() }),
+	async ({ id, title }) => {
+		console.log('updating...', { id });
+		await db.update(notesTable).set({ title }).where(eq(notesTable.id, id));
+		console.log('updating', { id });
+		getAllNotes().refresh();
+		// getNoteById(id).refresh();
+		console.log('updated!', { id });
+	}
+);
+
+// Private...
+
 async function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
