@@ -6,8 +6,15 @@ import { db } from '$lib/db';
 import { notesTable } from '$lib/db/schema';
 
 export const getAllNotes = query(async () => {
-	const result = await db.select().from(notesTable);
-	return result;
+	console.log('getAllNotes...');
+	try {
+		const result = await db.select().from(notesTable);
+		console.log('getAllNotes!', { result });
+		return result;
+	} catch (e) {
+		// console.log(e);
+		console.error(e.message);
+	}
 });
 
 export const getNoteById = query(v.string(), async (id: string) => {
