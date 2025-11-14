@@ -150,25 +150,28 @@
 		pointer-events: none;
 	}
 
-	/* Unique data id */
-	/* [data-id] { */
-	/* 	border: 2px solid var(--color-blue-500); */
-	/* 	border-radius: 0.5rem; */
-	/* 	padding: 2.5rem 1rem 1rem; */
-	/* 	position: relative; */
-	/**/
-	/* 	&::before { */
-	/* 		background-color: var(--color-blue-500); */
-	/* 		border-radius: 0 0 0.5rem 0; */
-	/* 		color: var(--white); */
-	/* 		content: attr(data-id); */
-	/* 		font-size: 0.75rem; */
-	/* 		font-weight: bold; */
-	/* 		left: 0; */
-	/* 		line-height: 1.5; */
-	/* 		padding: 0.25rem 0.5rem; */
-	/* 		position: absolute; */
-	/* 		top: 0; */
-	/* 	} */
-	/* } */
+	/* Unique data id - show task ID in top right */
+	[data-id] {
+		position: relative;
+
+		&::after {
+			@apply bg-blue-500 dark:bg-blue-600;
+			border-radius: 0.25rem 0 0 0.25rem;
+			@apply text-white dark:text-slate-100;
+			content: attr(data-id);
+			font-size: 0.65rem;
+			font-weight: 600;
+			line-height: 1.2;
+			padding: 0.125rem 0.35rem;
+			position: absolute;
+			right: 0;
+			top: 0.25rem;
+			opacity: 0.7;
+			font-family: monospace;
+		}
+
+		&:hover::after {
+			opacity: 1;
+		}
+	}
 }

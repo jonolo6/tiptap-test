@@ -6,11 +6,25 @@
 	import { Badge, badgeVariants } from '$lib/components/ui/badge';
 	import { getNoteById, updateNoteContent, updateNoteTitle } from '$lib/db/remote/notes.remote';
 	import { page } from '$app/state';
+	import { getAppModel } from '$lib/AppModel.svelte';
+	import TaskList from './TaskList.svelte';
 
 	let { id, class: className = '' }: { id: string; class?: ClassValue } = $props();
 
+	const appModel = getAppModel();
 	const note = $derived(getNoteById(id));
 	const newLineRegex = /^[\n\r]$/;
+
+	// Update note title in AppModel when it changes
+	$effect(() => {
+		if (note != null) {
+			note.then((n) => {
+				if (n?.title) {
+					appModel.setNoteTitle(id, n.title);
+				}
+			});
+		}
+	});
 
 	let hideNotes = $state(false);
 
@@ -79,6 +93,8 @@
 								content={note.content as Content}
 								onUpdate={(m) => saveContent(m.editor.getJSON())}
 								showMenuBar={false}
+								{appModel}
+								noteId={id}
 							/>
 						{/if}
 					{/await}
@@ -90,7 +106,7 @@
 			<a href="/dashboard" class={badgeVariants({ variant: 'secondary' })}>Main</a>
 			<Badge variant="outline">...</Badge>
 		</div>
-		<div class={['mt-6 min-h-20 px-4']}>Tasks...</div>
+		<TaskList />
 		<!-- <div> -->
 		<!-- 	<pre class="text-sm">{JSON.stringify(page, null, 2)}</pre> -->
 		<!-- </div> -->

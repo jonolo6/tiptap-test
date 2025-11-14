@@ -15,6 +15,8 @@ import { BulletList, ListItem, OrderedList, TaskItem, TaskList } from '@tiptap/e
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { Dropcursor, UndoRedo, Placeholder } from '@tiptap/extensions';
+import UniqueID from '@tiptap/extension-unique-id';
+import type { AppModel } from '$lib/AppModel.svelte';
 
 const lists = [
 	{
@@ -66,6 +68,8 @@ export const DEFAULT_VALUE = 'none';
 
 export class TiptapViewModel {
 	editor = $state() as Editor;
+	appModel = $state<AppModel | null>(null);
+	noteId = $state<string>('');
 
 	heading = $state(DEFAULT_VALUE);
 	list = $state(DEFAULT_VALUE);
@@ -81,8 +85,12 @@ export class TiptapViewModel {
 	constructor(
 		element: HTMLElement,
 		content: Content,
-		onUpdate?: (viewModel: TiptapViewModel) => void
+		onUpdate?: (viewModel: TiptapViewModel) => void,
+		options?: { appModel?: AppModel; noteId?: string }
 	) {
+		this.appModel = options?.appModel ?? null;
+		this.noteId = options?.noteId ?? '';
+
 		this.editor = new Editor({
 			element,
 			extensions: [
@@ -130,7 +138,7 @@ export class TiptapViewModel {
 					// Use different placeholders depending on the node type:
 					// placeholder: ({ node }) => {
 					//   if (node.type.name === 'heading') {
-					//     return 'What’s the title?'
+					//     return 'What's the title?'
 					//   }
 
 					//   return 'Can you add some further context?'
@@ -144,18 +152,22 @@ export class TiptapViewModel {
 					},
 				}),
 				UndoRedo,
-				// UniqueID.configure({
-				// 	types: ['taskItem']
-				// })
+				UniqueID.configure({
+					types: ['taskItem'],
+				}),
 			],
 			content,
 			onUpdate: () => {
 				this.#updateInternalState();
+				this.#syncTodosWithAppModel();
 				onUpdate?.(this);
 			},
 			onSelectionUpdate: () => this.#updateInternalState(),
 			onTransaction: () => this.#updateInternalState(),
 		});
+
+		// Initial sync of todos
+		this.#syncTodosWithAppModel();
 	}
 
 	#updateInternalState() {
@@ -173,6 +185,54 @@ export class TiptapViewModel {
 			if (this.editor.isActive('heading', { level })) {
 				console.log('same');
 				this.heading = key;
+			}
+		});
+	}
+
+	#syncTodosWithAppModel() {
+		if (!this.appModel || !this.noteId) return;
+
+		const currentTodoIds = new Set<string>();
+		let lineNumber = 0;
+
+		// Walk through the document and find all taskItems
+		this.editor.state.doc.descendants((node, pos) => {
+			lineNumber++;
+			if (node.type.name === 'taskItem') {
+				const id = node.attrs.id;
+				if (id) {
+					currentTodoIds.add(id);
+
+					// Get the text content of the task
+					const title = node.textContent || '';
+
+					// Update or create todo in AppModel
+					const existingTodo = this.appModel!.getTodo(id);
+					if (existingTodo) {
+						// Update existing todo
+						this.appModel!.updateTodo(id, {
+							title,
+							lineNumber,
+						});
+					} else {
+						// Create new todo
+						this.appModel!.setTodo(id, {
+							title,
+							flagged: false,
+							noteId: this.noteId,
+							lineNumber,
+						});
+					}
+				}
+			}
+		});
+
+		// Remove todos that no longer exist in the editor
+		const allTodos = this.appModel.todos;
+		Object.keys(allTodos).forEach((id) => {
+			const todo = allTodos[id];
+			if (todo.noteId === this.noteId && !currentTodoIds.has(id)) {
+				this.appModel!.deleteTodo(id);
 			}
 		});
 	}

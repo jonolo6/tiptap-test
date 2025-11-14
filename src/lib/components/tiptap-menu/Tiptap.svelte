@@ -7,6 +7,8 @@
 	import { TiptapViewModel } from '$lib/components/tiptap-menu/TipTapViewModel.svelte';
 	import BubbleMenu from '$lib/components/tiptap-menu/BubbleMenu.svelte';
 
+	import type { AppModel } from '$lib/AppModel.svelte';
+
 	let {
 		content = `
         <h1>Hello Svelte! 🌍️ </h1>
@@ -16,11 +18,15 @@
 		onUpdate,
 		showMenuBar = true,
 		class: classValue,
+		appModel,
+		noteId,
 	}: {
 		content: Content;
 		onUpdate: (model: TiptapViewModel) => void;
 		showMenuBar?: boolean;
 		class?: ClassValue;
+		appModel?: AppModel;
+		noteId?: string;
 	} = $props();
 
 	let element = $state<HTMLDivElement>();
@@ -28,7 +34,7 @@
 	let model = $state<TiptapViewModel>();
 
 	onMount(() => {
-		model = new TiptapViewModel(element!, content, onUpdate);
+		model = new TiptapViewModel(element!, content, onUpdate, { appModel, noteId });
 		return () => {
 			model?.destroy();
 		};
