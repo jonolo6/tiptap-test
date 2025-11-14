@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ModeWatcher } from 'mode-watcher';
 
+	import { initialiseAppModel } from '$lib/AppModel.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
@@ -10,6 +11,8 @@
 	import '../tiptap.css';
 
 	let { children, data } = $props();
+
+	initialiseAppModel();
 
 	$inspect({ data });
 </script>
