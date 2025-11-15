@@ -1,21 +1,20 @@
 import { Editor, type Content } from '@tiptap/core';
 import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
-import BubbleMenu from '@tiptap/extension-bubble-menu';
 import CodeBlock from '@tiptap/extension-code-block';
 import Document from '@tiptap/extension-document';
 import HardBreak from '@tiptap/extension-hard-break';
-import Italic from '@tiptap/extension-italic';
-import Strike from '@tiptap/extension-strike';
-
 import Heading from '@tiptap/extension-heading';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Image from '@tiptap/extension-image';
+import Italic from '@tiptap/extension-italic';
 import { BulletList, ListItem, OrderedList, TaskList } from '@tiptap/extension-list';
 import Paragraph from '@tiptap/extension-paragraph';
+import Strike from '@tiptap/extension-strike';
 import Text from '@tiptap/extension-text';
-import { Dropcursor, UndoRedo, Placeholder } from '@tiptap/extensions';
 import UniqueID from '@tiptap/extension-unique-id';
+import { Dropcursor, Placeholder, UndoRedo } from '@tiptap/extensions';
+
 import type { AppModel } from '$lib/AppModel.svelte';
 import { TaskItemWithFlag } from './TaskItemWithFlag';
 

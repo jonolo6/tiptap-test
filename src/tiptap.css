@@ -25,14 +25,14 @@
 		align-items: center;
 
 		label {
-			padding-right: 0.5em;
+			/* padding-right: 0em; */
 		}
 	}
 
 	/* Task flag button */
 	.task-flag-button {
-		margin-left: 0.2rem;
-		margin-right: 0.4rem;
+		margin-left: 0rem;
+		margin-right: 0.3rem;
 		cursor: pointer;
 		background: none;
 		border: none;
@@ -114,6 +114,32 @@
 	}
 	ul[data-type='taskList'] {
 		/* padding-left: 0px; */
+		list-style: none;
+		margin-left: 0;
+		padding: 0;
+
+		li {
+			align-items: flex-start;
+			display: flex;
+
+			> label {
+				flex: 0 0 auto;
+				margin-right: 0.5rem;
+				user-select: none;
+			}
+
+			> div {
+				flex: 1 1 auto;
+			}
+		}
+
+		input[type='checkbox'] {
+			cursor: pointer;
+		}
+
+		ul[data-type='taskList'] {
+			margin: 0;
+		}
 	}
 
 	ol ::marker {

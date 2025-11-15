@@ -3,6 +3,7 @@ import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { mount, unmount } from 'svelte';
 import TaskFlagButtonWrapper from './TaskFlagButtonWrapper.svelte';
 import type { AppModel } from '$lib/AppModel.svelte';
+import TaskItemView from './TaskItem.svelte';
 
 export interface TaskItemWithFlagOptions {
 	appModel: AppModel | null;
@@ -74,34 +75,52 @@ export const TaskItemWithFlag = TaskItem.extend<TaskItemWithFlagOptions>({
 			};
 
 			// Create checkbox
-			const label = document.createElement('label');
-			label.contentEditable = 'false';
-			const checkbox = document.createElement('input');
-			checkbox.type = 'checkbox';
-			checkbox.checked = node.attrs.checked;
-			checkbox.onchange = () => updateNodeAttrs({ checked: checkbox.checked });
-			label.appendChild(checkbox);
-			dom.appendChild(label);
+			// const label = document.createElement('label');
+			// label.contentEditable = 'false';
+			// const checkbox = document.createElement('input');
+			// checkbox.type = 'checkbox';
+			// checkbox.checked = node.attrs.checked;
+			// checkbox.onchange = () => updateNodeAttrs({ checked: checkbox.checked });
+			// label.appendChild(checkbox);
+			// dom.appendChild(label);
 
 			// Create flag button
-			const flagContainer = document.createElement('span');
-			flagContainer.contentEditable = 'false';
-			const flagComponent = mount(TaskFlagButtonWrapper, {
-				target: flagContainer,
+			// const flagContainer = document.createElement('span');
+			// flagContainer.contentEditable = 'false';
+			// const flagComponent = mount(TaskFlagButtonWrapper, {
+			// 	target: flagContainer,
+			// 	props: {
+			// 		initialFlagged: node.attrs.flagged ?? false,
+			// 		onclick: (e: MouseEvent) => {
+			// 			e.preventDefault();
+			// 			e.stopPropagation();
+			// 			updateNodeAttrs({ flagged: !node.attrs.flagged });
+			// 		},
+			// 	},
+			// });
+			// dom.appendChild(flagContainer);
+
+			// Create content container
+			const contentDOM = document.createElement('div');
+			dom.appendChild(contentDOM);
+
+			const taskItemView = mount(TaskItemView, {
+				target: dom,
 				props: {
-					initialFlagged: node.attrs.flagged ?? false,
+					flagged: node.attrs.flagged ?? true,
+					checked: node.attrs.checked ?? false,
 					onclick: (e: MouseEvent) => {
 						e.preventDefault();
 						e.stopPropagation();
 						updateNodeAttrs({ flagged: !node.attrs.flagged });
 					},
+					onchecked: (checked) => {
+						console.log({ checked });
+						updateNodeAttrs({ checked });
+					},
 				},
 			});
-			dom.appendChild(flagContainer);
-
-			// Create content container
-			const contentDOM = document.createElement('div');
-			dom.appendChild(contentDOM);
+			// dom.appendChild(todoItem)
 
 			return {
 				dom,
@@ -110,7 +129,7 @@ export const TaskItemWithFlag = TaskItem.extend<TaskItemWithFlagOptions>({
 					if (updatedNode.type !== node.type) return false;
 
 					// Update checkbox state
-					checkbox.checked = updatedNode.attrs.checked;
+					// checkbox.checked = updatedNode.attrs.checked;
 					dom.dataset.checked = String(updatedNode.attrs.checked);
 
 					// Update flagged state
@@ -120,11 +139,16 @@ export const TaskItemWithFlag = TaskItem.extend<TaskItemWithFlagOptions>({
 					} else {
 						delete dom.dataset.flagged;
 					}
-					flagComponent.updateFlagged(flagged);
+					// flagComponent.updateFlagged(flagged);
+					taskItemView.updateFlagged(updatedNode.attrs.flagged);
+					taskItemView.updateChecked(updatedNode.attrs.checked);
 
 					return true;
 				},
-				destroy: () => unmount(flagComponent),
+				destroy: () => {
+					// unmount(flagComponent);
+					unmount(taskItemView);
+				},
 			};
 		};
 	},

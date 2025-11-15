@@ -2,11 +2,10 @@
 	import type { Content } from '@tiptap/core';
 	import type { ClassValue } from 'svelte/elements';
 
+	import { getAppModel } from '$lib/AppModel.svelte';
 	import Tiptap from '$lib/components/tiptap-menu/Tiptap.svelte';
 	import { Badge, badgeVariants } from '$lib/components/ui/badge';
 	import { getNoteById, updateNoteContent, updateNoteTitle } from '$lib/db/remote/notes.remote';
-	import { page } from '$app/state';
-	import { getAppModel } from '$lib/AppModel.svelte';
 	import TaskList from './TaskList.svelte';
 
 	let { id, class: className = '' }: { id: string; class?: ClassValue } = $props();

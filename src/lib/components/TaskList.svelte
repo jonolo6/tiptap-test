@@ -10,7 +10,12 @@
 </script>
 
 <div class={['mt-6 min-h-20 px-4']}>
-	<h3 class="mb-2 text-lg font-semibold">All Tasks ({allTodos.length})</h3>
+	<h3 class="mb-2 flex justify-between text-lg font-semibold">
+		<div>
+			All Tasks ({allTodos.length})
+		</div>
+		<div class="text-sm font-normal">Sort</div>
+	</h3>
 	{#if allTodos.length > 0}
 		<ul class="space-y-3">
 			{#each allTodos as todo}
