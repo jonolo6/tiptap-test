@@ -9,10 +9,17 @@ export interface Todo {
 	noteId: string;
 }
 
+export interface TodoCallbacks {
+	onTodoAdded?: (id: string, todo: Todo) => void;
+	onTodoUpdated?: (id: string, updates: Partial<Todo>, todo: Todo) => void;
+	onTodoDeleted?: (id: string, todo: Todo) => void;
+}
+
 export class AppModel {
 	#todos = $state<Record<string, Todo>>({});
 	#noteTitles = $state<Record<string, string>>({});
 	#todoChangeCallbacks: Set<() => void> = new Set();
+	#todoCallbacks: TodoCallbacks = {};
 
 	get todos() {
 		return this.#todos;
@@ -25,6 +32,10 @@ export class AppModel {
 	onTodoChange(callback: () => void) {
 		this.#todoChangeCallbacks.add(callback);
 		return () => this.#todoChangeCallbacks.delete(callback);
+	}
+
+	setTodoCallbacks(callbacks: TodoCallbacks) {
+		this.#todoCallbacks = callbacks;
 	}
 
 	#notifyTodoChange() {
@@ -44,18 +55,27 @@ export class AppModel {
 	}
 
 	setTodo(id: string, todo: Todo) {
+		const isNew = !this.#todos[id];
 		this.#todos[id] = todo;
+		if (isNew) {
+			this.#todoCallbacks.onTodoAdded?.(id, todo);
+		}
 	}
 
 	updateTodo(id: string, updates: Partial<Todo>) {
 		const existing = this.#todos[id];
 		if (existing) {
 			this.#todos[id] = { ...existing, ...updates };
+			this.#todoCallbacks.onTodoUpdated?.(id, updates, this.#todos[id]);
 		}
 	}
 
 	deleteTodo(id: string) {
-		delete this.#todos[id];
+		const todo = this.#todos[id];
+		if (todo) {
+			delete this.#todos[id];
+			this.#todoCallbacks.onTodoDeleted?.(id, todo);
+		}
 	}
 
 	toggleTodoFlag(id: string) {

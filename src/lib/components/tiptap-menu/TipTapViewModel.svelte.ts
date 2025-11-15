@@ -71,6 +71,7 @@ export class TiptapViewModel {
 	appModel = $state<AppModel | null>(null);
 	noteId = $state<string>('');
 	#unsubscribeTodoChange?: () => void;
+	#isSyncing = false; // Prevent infinite loops
 
 	heading = $state(DEFAULT_VALUE);
 	list = $state(DEFAULT_VALUE);
@@ -123,10 +124,7 @@ export class TiptapViewModel {
 					},
 				}),
 				ListItem.configure({
-					HTMLAttributes: {
-						// class: 'first:mt-1',
-						// class: 'pl-2 list-disc',
-					},
+					HTMLAttributes: {},
 				}),
 				OrderedList.configure({
 					HTMLAttributes: {
@@ -134,16 +132,7 @@ export class TiptapViewModel {
 					},
 				}),
 				Placeholder.configure({
-					// Use a placeholder:
 					placeholder: 'Notes…',
-					// Use different placeholders depending on the node type:
-					// placeholder: ({ node }) => {
-					//   if (node.type.name === 'heading') {
-					//     return 'What's the title?'
-					//   }
-
-					//   return 'Can you add some further context?'
-					// },
 				}),
 				TaskList,
 				TaskItemWithFlag.configure({
@@ -168,16 +157,30 @@ export class TiptapViewModel {
 			onTransaction: () => this.#updateInternalState(),
 		});
 
-		// Initial sync of todos
-		this.#syncTodosWithAppModel();
-
-		// Listen for todo changes from AppModel (e.g., from TaskList)
+		// Setup callbacks for AppModel
 		if (this.appModel) {
+			// Set callbacks so AppModel can notify us of changes
+			this.appModel.setTodoCallbacks({
+				onTodoAdded: (id, todo) => {
+					console.log('Todo added:', id, todo);
+				},
+				onTodoUpdated: (id, updates, todo) => {
+					console.log('Todo updated:', id, updates, todo);
+				},
+				onTodoDeleted: (id, todo) => {
+					console.log('Todo deleted:', id, todo);
+				},
+			});
+
+			// Listen for todo changes from AppModel (e.g., from TaskList)
 			this.#unsubscribeTodoChange = this.appModel.onTodoChange(() => {
 				// Sync AppModel changes back to Tiptap nodes
 				this.#syncAppModelToTiptap();
 			});
 		}
+
+		// Initial sync of todos
+		this.#syncTodosWithAppModel();
 	}
 
 	#updateInternalState() {
@@ -193,89 +196,105 @@ export class TiptapViewModel {
 		this.heading = DEFAULT_VALUE;
 		headings.forEach(({ key, level }) => {
 			if (this.editor.isActive('heading', { level })) {
-				console.log('same');
 				this.heading = key;
 			}
 		});
 	}
 
 	#syncAppModelToTiptap() {
-		if (!this.appModel || !this.noteId) return;
+		if (!this.appModel || !this.noteId || this.#isSyncing) return;
 
-		const { tr } = this.editor.state;
-		let updated = false;
+		this.#isSyncing = true;
+		try {
+			const { tr } = this.editor.state;
+			let updated = false;
 
-		// Walk through document and update node attributes from AppModel
-		this.editor.state.doc.descendants((node, pos) => {
-			if (node.type.name === 'taskItem' && node.attrs.id) {
-				const todo = this.appModel!.getTodo(node.attrs.id);
-				if (todo) {
-					const needsUpdate =
-						node.attrs.flagged !== todo.flagged || node.attrs.checked !== todo.checked;
-					if (needsUpdate) {
-						tr.setNodeMarkup(pos, undefined, {
-							...node.attrs,
-							checked: todo.checked,
-							flagged: todo.flagged,
-						});
-						updated = true;
+			// Walk through document and update node attributes from AppModel
+			this.editor.state.doc.descendants((node, pos) => {
+				if (node.type.name === 'taskItem' && node.attrs.id) {
+					const todo = this.appModel!.getTodo(node.attrs.id);
+					if (todo) {
+						const needsUpdate =
+							node.attrs.flagged !== todo.flagged || node.attrs.checked !== todo.checked;
+						if (needsUpdate) {
+							tr.setNodeMarkup(pos, undefined, {
+								...node.attrs,
+								checked: todo.checked,
+								flagged: todo.flagged,
+							});
+							updated = true;
+						}
 					}
 				}
-			}
-		});
+			});
 
-		if (updated) {
-			this.editor.view.dispatch(tr);
+			if (updated) {
+				this.editor.view.dispatch(tr);
+			}
+		} finally {
+			this.#isSyncing = false;
 		}
 	}
 
 	#syncTodosWithAppModel() {
-		if (!this.appModel || !this.noteId) return;
+		if (!this.appModel || !this.noteId || this.#isSyncing) return;
 
-		const currentTodoIds = new Set<string>();
+		this.#isSyncing = true;
+		try {
+			const currentTodoIds = new Set<string>();
 
-		// Walk through the document and find all taskItems
-		this.editor.state.doc.descendants((node, pos) => {
-			if (node.type.name === 'taskItem') {
-				const id = node.attrs.id;
-				if (id) {
-					currentTodoIds.add(id);
+			// Walk through the document and find all taskItems
+			this.editor.state.doc.descendants((node) => {
+				if (node.type.name === 'taskItem') {
+					const id = node.attrs.id;
+					if (id) {
+						currentTodoIds.add(id);
 
-					// Get the text content and states from the node
-					const title = node.textContent || '';
-					const checked = node.attrs.checked ?? false;
-					const flagged = node.attrs.flagged ?? false;
+						// Get the text content and states from the node
+						const title = node.textContent || '';
+						const checked = node.attrs.checked ?? false;
+						const flagged = node.attrs.flagged ?? false;
 
-					// Update or create todo in AppModel
-					const existingTodo = this.appModel!.getTodo(id);
-					if (existingTodo) {
-						// Update existing todo
-						this.appModel!.updateTodo(id, {
-							title,
-							checked,
-							flagged,
-						});
-					} else {
-						// Create new todo
-						this.appModel!.setTodo(id, {
-							title,
-							checked,
-							flagged,
-							noteId: this.noteId,
-						});
+						// Update or create todo in AppModel
+						const existingTodo = this.appModel!.getTodo(id);
+						if (existingTodo) {
+							// Only update if something has actually changed
+							const hasChanges =
+								existingTodo.title !== title ||
+								existingTodo.checked !== checked ||
+								existingTodo.flagged !== flagged;
+
+							if (hasChanges) {
+								this.appModel!.updateTodo(id, {
+									title,
+									checked,
+									flagged,
+								});
+							}
+						} else {
+							// Create new todo
+							this.appModel!.setTodo(id, {
+								title,
+								checked,
+								flagged,
+								noteId: this.noteId,
+							});
+						}
 					}
 				}
-			}
-		});
+			});
 
-		// Remove todos that no longer exist in the editor
-		const allTodos = this.appModel.todos;
-		Object.keys(allTodos).forEach((id) => {
-			const todo = allTodos[id];
-			if (todo.noteId === this.noteId && !currentTodoIds.has(id)) {
-				this.appModel!.deleteTodo(id);
-			}
-		});
+			// Remove todos that no longer exist in the editor
+			const allTodos = this.appModel.todos;
+			Object.keys(allTodos).forEach((id) => {
+				const todo = allTodos[id];
+				if (todo.noteId === this.noteId && !currentTodoIds.has(id)) {
+					this.appModel!.deleteTodo(id);
+				}
+			});
+		} finally {
+			this.#isSyncing = false;
+		}
 	}
 
 	destroy() {

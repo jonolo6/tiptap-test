@@ -2,7 +2,6 @@
 	import { Flag } from '@lucide/svelte';
 
 	import { getAppModel } from '$lib/AppModel.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
 
 	const appModel = getAppModel();

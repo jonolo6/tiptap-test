@@ -2,24 +2,27 @@
 	import FlagIcon from '@lucide/svelte/icons/flag';
 
 	let {
-		initialFlagged = false,
+		flagged = $bindable(false),
 		onclick,
-	}: { initialFlagged?: boolean; onclick?: (e: MouseEvent) => void } = $props();
-
-	let flagged = $state(initialFlagged);
+	}: { flagged?: boolean; onclick?: (e: MouseEvent) => void } = $props();
 
 	export function updateFlagged(value: boolean) {
 		flagged = value;
 	}
 </script>
 
+<!-- /* &.task-flag-button--flagged { */ -->
+<!-- /* 	@apply text-blue-500 dark:text-blue-400; */ -->
+<!-- /**/ -->
+
 <button
-	class="task-flag-button"
-	class:task-flag-button--flagged={flagged}
+	class={`task-flag-button flex cursor-pointer items-center justify-center 
+  pr-0.5 text-slate-600 select-none dark:text-slate-400 [.flagged]:text-blue-500`}
+	class:flagged
 	contenteditable="false"
 	title={flagged ? 'Remove flag' : 'Add flag'}
 	aria-label={flagged ? 'Remove flag' : 'Add flag'}
 	{onclick}
 >
-	<FlagIcon size={16} fill={flagged ? 'currentColor' : 'none'} />
+	<FlagIcon size={14} fill={flagged ? 'currentColor' : 'none'} />
 </button>
