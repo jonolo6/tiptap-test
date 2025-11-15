@@ -11,12 +11,13 @@ import Strike from '@tiptap/extension-strike';
 import Heading from '@tiptap/extension-heading';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Image from '@tiptap/extension-image';
-import { BulletList, ListItem, OrderedList, TaskItem, TaskList } from '@tiptap/extension-list';
+import { BulletList, ListItem, OrderedList, TaskList } from '@tiptap/extension-list';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { Dropcursor, UndoRedo, Placeholder } from '@tiptap/extensions';
 import UniqueID from '@tiptap/extension-unique-id';
 import type { AppModel } from '$lib/AppModel.svelte';
+import { TaskItemWithFlag } from './TaskItemWithFlag';
 
 const lists = [
 	{
@@ -70,6 +71,7 @@ export class TiptapViewModel {
 	editor = $state() as Editor;
 	appModel = $state<AppModel | null>(null);
 	noteId = $state<string>('');
+	#unsubscribeTodoChange?: () => void;
 
 	heading = $state(DEFAULT_VALUE);
 	list = $state(DEFAULT_VALUE);
@@ -145,12 +147,13 @@ export class TiptapViewModel {
 					// },
 				}),
 				TaskList,
-				TaskItem.configure({
+				TaskItemWithFlag.configure({
+					appModel: this.appModel,
 					nested: true,
 					HTMLAttributes: {
 						class: '[&_p]:min-w-1',
 					},
-				}),
+				} as any),
 				UndoRedo,
 				UniqueID.configure({
 					types: ['taskItem'],
@@ -168,6 +171,14 @@ export class TiptapViewModel {
 
 		// Initial sync of todos
 		this.#syncTodosWithAppModel();
+
+		// Listen for todo changes from AppModel (e.g., from TaskList)
+		if (this.appModel) {
+			this.#unsubscribeTodoChange = this.appModel.onTodoChange(() => {
+				// Sync AppModel changes back to Tiptap nodes
+				this.#syncAppModelToTiptap();
+			});
+		}
 	}
 
 	#updateInternalState() {
@@ -189,22 +200,52 @@ export class TiptapViewModel {
 		});
 	}
 
+	#syncAppModelToTiptap() {
+		if (!this.appModel || !this.noteId) return;
+
+		const { tr } = this.editor.state;
+		let updated = false;
+
+		// Walk through document and update node attributes from AppModel
+		this.editor.state.doc.descendants((node, pos) => {
+			if (node.type.name === 'taskItem' && node.attrs.id) {
+				const todo = this.appModel!.getTodo(node.attrs.id);
+				if (todo) {
+					const needsUpdate =
+						node.attrs.flagged !== todo.flagged || node.attrs.checked !== todo.checked;
+					if (needsUpdate) {
+						tr.setNodeMarkup(pos, undefined, {
+							...node.attrs,
+							checked: todo.checked,
+							flagged: todo.flagged,
+						});
+						updated = true;
+					}
+				}
+			}
+		});
+
+		if (updated) {
+			this.editor.view.dispatch(tr);
+		}
+	}
+
 	#syncTodosWithAppModel() {
 		if (!this.appModel || !this.noteId) return;
 
 		const currentTodoIds = new Set<string>();
-		let lineNumber = 0;
 
 		// Walk through the document and find all taskItems
 		this.editor.state.doc.descendants((node, pos) => {
-			lineNumber++;
 			if (node.type.name === 'taskItem') {
 				const id = node.attrs.id;
 				if (id) {
 					currentTodoIds.add(id);
 
-					// Get the text content of the task
+					// Get the text content and states from the node
 					const title = node.textContent || '';
+					const checked = node.attrs.checked ?? false;
+					const flagged = node.attrs.flagged ?? false;
 
 					// Update or create todo in AppModel
 					const existingTodo = this.appModel!.getTodo(id);
@@ -212,15 +253,16 @@ export class TiptapViewModel {
 						// Update existing todo
 						this.appModel!.updateTodo(id, {
 							title,
-							lineNumber,
+							checked,
+							flagged,
 						});
 					} else {
 						// Create new todo
 						this.appModel!.setTodo(id, {
 							title,
-							flagged: false,
+							checked,
+							flagged,
 							noteId: this.noteId,
-							lineNumber,
 						});
 					}
 				}
@@ -238,6 +280,10 @@ export class TiptapViewModel {
 	}
 
 	destroy() {
+		// Unsubscribe from todo changes
+		if (this.#unsubscribeTodoChange) {
+			this.#unsubscribeTodoChange();
+		}
 		this.editor.destroy();
 	}
 }

@@ -4,14 +4,15 @@ const APP_MODEL_KEY = Symbol('APP_MODEL');
 
 export interface Todo {
 	title: string;
+	checked: boolean;
 	flagged: boolean;
 	noteId: string;
-	lineNumber: number;
 }
 
 export class AppModel {
 	#todos = $state<Record<string, Todo>>({});
 	#noteTitles = $state<Record<string, string>>({});
+	#todoChangeCallbacks: Set<() => void> = new Set();
 
 	get todos() {
 		return this.#todos;
@@ -19,6 +20,15 @@ export class AppModel {
 
 	get noteTitles() {
 		return this.#noteTitles;
+	}
+
+	onTodoChange(callback: () => void) {
+		this.#todoChangeCallbacks.add(callback);
+		return () => this.#todoChangeCallbacks.delete(callback);
+	}
+
+	#notifyTodoChange() {
+		this.#todoChangeCallbacks.forEach((callback) => callback());
 	}
 
 	setNoteTitle(noteId: string, title: string) {
@@ -52,26 +62,28 @@ export class AppModel {
 		const todo = this.#todos[id];
 		if (todo) {
 			this.#todos[id] = { ...todo, flagged: !todo.flagged };
+			this.#notifyTodoChange();
+		}
+	}
+
+	toggleTodoChecked(id: string) {
+		const todo = this.#todos[id];
+		if (todo) {
+			this.#todos[id] = { ...todo, checked: !todo.checked };
+			this.#notifyTodoChange();
 		}
 	}
 
 	getTodosForNote(noteId: string): Array<Todo & { id: string }> {
 		return Object.entries(this.#todos)
 			.filter(([_, todo]) => todo.noteId === noteId)
-			.map(([id, todo]) => ({ ...todo, id }))
-			.sort((a, b) => a.lineNumber - b.lineNumber);
+			.map(([id, todo]) => ({ ...todo, id }));
 	}
 
 	getAllTodos(): Array<Todo & { id: string }> {
 		return Object.entries(this.#todos)
 			.map(([id, todo]) => ({ ...todo, id }))
-			.sort((a, b) => {
-				// Sort by noteId first, then by lineNumber
-				if (a.noteId !== b.noteId) {
-					return a.noteId.localeCompare(b.noteId);
-				}
-				return a.lineNumber - b.lineNumber;
-			});
+			.sort((a, b) => a.noteId.localeCompare(b.noteId));
 	}
 
 	constructor() {
